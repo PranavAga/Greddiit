@@ -39,8 +39,18 @@ export default function MyProfile(){
     const [nfollowing,setNfollowing]=useState('');
     const [following,setFollowin]=useState();
     const [followers,setFollowers]=useState();
+        //previous values
+    const [puname,setPuname]=useState();
+    const [pfname,setPfname]=useState();
+    const [plname,setPlname]=useState();
+    const [pemail,setPemail]=useState();
+    const [page,setPage]=useState();
+    const [pcont,setPcont]=useState();
+    const []=useState();
+    const []=useState();
+    const []=useState();
 
-    // let puname,pemail,page,pcont,plname,pfname;
+    // let pname,pemail,page,pcont,plname,pfname;
 
     const prevValues=async(e)=>{
         //set buttons disable
@@ -48,12 +58,12 @@ export default function MyProfile(){
             const user=await profileAPI.default();
             // console.log(user);
             // document.getElementById('nuname').value=user.uname
-            setNusname(user.uname);puname=user.uname;
-            setNfname(user.fname);pfname=user.fname;
-            setNemail(user.email);pemail=user.email;
-            setNlname(user.lname);plname=user.lname;
-            setNage(user.age);page=user.age;
-            setNcont(user.contact);pcont=user.contact;
+            setNusname(user.uname);setPuname(user.uname);
+            setNfname(user.fname);setPfname(user.fname);
+            setNemail(user.email);setPemail(user.email);
+            setNlname(user.lname);setPlname(user.lname);
+            setNage(user.age);setPage(user.age);
+            setNcont(user.contact);setPcont(user.contact);
         } catch (error) {
             console.error(error);
         }
@@ -108,6 +118,7 @@ export default function MyProfile(){
                 )
                 )
         ){
+            // if ()
             setWronginp(false); 
         }
         else{
@@ -131,6 +142,7 @@ export default function MyProfile(){
         // console.log(uname,fname,lname,contact,age,email,oldpassword,npassword);
         try {
             const res= await profileAPI.update(uname,oldpassword,npassword,fname,email,lname,age,contact);
+            prevValues();
         } catch (error) {
             if (error.errors[0]){
                 alert(error.errors[0].msg);
@@ -140,6 +152,17 @@ export default function MyProfile(){
             }
         }
         setWronginp(prev);
+        setLock(true);
+    }
+    const revertChanges=(e)=>{
+        setNlname(plname);
+        setNfname(pfname)
+        setNusname(puname);
+        setNcont(pcont);
+        setNage(page);
+        setNemail(pemail);
+        setNpswd("");
+        setOpswd("");
         setLock(true);
     }
     function openFollowers(){
@@ -170,8 +193,12 @@ export default function MyProfile(){
             (lock)&&
             <button onClick={editable}>Edit</button>}
             {
-                (!lock)&&
-                <button type="submit" onClick={savechanges} disabled={wronginp}>Save</button>}
+                
+                (!lock)&&<>
+                <button type="submit" onClick={savechanges} disabled={wronginp}>Save</button>
+                <button onClick={revertChanges} >Back</button>
+                </>
+            }
             <br></br><br></br>
             
             <form>
@@ -202,10 +229,10 @@ export default function MyProfile(){
                 <br></br>
                 <p>To change password enter:</p>
                 <label>Current password</label>
-                <input id='opswd' disabled={lock} type='password' onChange={(e)=>setOpswd(e.target.value)} ></input>
+                <input id='opswd' value={opswd} disabled={lock} type='password' onChange={(e)=>setOpswd(e.target.value)} ></input>
                 <br></br>
                 <label>New password</label>
-                <input id='npswd' disabled={lock} type='password' onChange={(e)=>setNpswd(e.target.value)} ></input>                
+                <input id='npswd' value={npswd} disabled={lock} type='password' onChange={(e)=>setNpswd(e.target.value)} ></input>                
                 <br></br><br></br>
                 <p>Space is only accepted in Last Name <br></br>*Required</p>
 
