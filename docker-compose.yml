@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  backend:
+    build: 
+      context: ./backend 
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+
+  frontend:
+    depends_on:
+      - backend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports: 
+      - "3000:3000"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+    depends_on:
+      - frontend
+      - backend
+
+networks:
+  backend:
+  frontend:
