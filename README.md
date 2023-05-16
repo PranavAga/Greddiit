@@ -1,4 +1,7 @@
-# DASS Assignment 1
+# GREDDIIT
+## Reddit, but different 
+### Made as an assignment for the course Design and Analysis of Software Systems (S23CS6.301)
+<!-- # DASS Assignment 1
 
 ## Part 2 and Part 3 submission
 
@@ -14,4 +17,4 @@
   - > ./2021113018:
     - > docker compose build
     - > docker compose up
-    - open "localhost:3000"in browser
+    - open "localhost:3000"in browser -->
