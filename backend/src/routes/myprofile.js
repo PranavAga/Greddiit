@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import verify from '../middleware/verify.js'
 import Users from '../../schema/User.js'
 import Followspair from '../../schema/UserFF.js';
-import {body,validationResult} from 'express-validator';
+import {body,oneOf,validationResult} from 'express-validator';
 
 const router=express.Router();
 router.use(express.json());
@@ -21,7 +21,7 @@ router.get('/',verify,async(req,res)=>{
 });
 
 router.post('/',verify,
-    body('contact').matches("^[\+][0-9]{2}-[0-9]{10}$"),
+oneOf([body('contact').matches("^[\+][0-9]{2}-[0-9]{10}$"),body('contact').isEmpty()]),
     body('email').isEmail(),
     body('uname').not().isEmpty(),
     body('fname').not().isEmpty(),

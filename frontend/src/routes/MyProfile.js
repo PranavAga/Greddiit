@@ -25,6 +25,7 @@ export default function MyProfile(){
     const [openfs,setOpenfs]=useState(false);
     const [openfg,setOpenfg]=useState(false);
     const [wronginp,setWronginp]=useState(false);    
+    
     //User data
     const [nusname,setNusname]=useState();
     const [npswd,setNpswd]=useState();
@@ -39,7 +40,7 @@ export default function MyProfile(){
     const [following,setFollowin]=useState();
     const [followers,setFollowers]=useState();
 
-    let puname,pemail,page,pcont,plname,pfname;
+    // let puname,pemail,page,pcont,plname,pfname;
 
     const prevValues=async(e)=>{
         //set buttons disable
@@ -82,6 +83,8 @@ export default function MyProfile(){
         getFollowers();
         getFollowing();
     },[]);
+
+    //checking new input format
     useEffect(()=>{
         const check_sp=/\s/;
         const email=document.getElementById('nemail');
@@ -92,7 +95,7 @@ export default function MyProfile(){
         if(isEmailvalid
             && nfname?.trim() && !check_sp.test(nfname)
             && nusname?.trim() && !check_sp.test(nusname)
-            && (isContValid||!ncont)
+            && (isContValid||!cont)
             && (
                 (
                 !opswd 
@@ -105,7 +108,7 @@ export default function MyProfile(){
                 )
                 )
         ){
-            setWronginp(false);
+            setWronginp(false); 
         }
         else{
             setWronginp(true);
