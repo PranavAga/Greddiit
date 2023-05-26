@@ -16,6 +16,7 @@ import axios from 'axios';
 
 import MyProfile from './MyProfile.js';
 import MySG from './MySG.js';
+import SG from './SG.js'
 import Top from './util/top';
 
 export default function Home(){
@@ -59,6 +60,9 @@ export default function Home(){
                     </Tabs>             
                 </Box>
                 {/* Panels */}
+                <TabPanel value="sg">
+                    <SG/>
+                </TabPanel>
                 <TabPanel value='mp'>   
                     <MyProfile/>
                 </TabPanel>
