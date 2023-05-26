@@ -131,7 +131,7 @@ export default function MySG(){
                 borderRadius: 3
             }}
         >
-            <h2>Created Subgreddiits</h2>
+            <h2>&nbsp;Created Subgreddiits</h2>
             {
                 sgs?.map((elem)=>
                 <Box
@@ -140,7 +140,8 @@ export default function MySG(){
 
                     borderTop:1,
                     borderBottom:1,
-                    borderColor: 'secondary.main'
+                    borderColor: 'secondary.main',
+                    p: 2
                 }}>
                     <h3>{elem.name}</h3>
                     <button type='submit' onClick={()=>delSG(elem._id)}>Delete</button>
