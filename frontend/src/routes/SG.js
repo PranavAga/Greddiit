@@ -37,9 +37,22 @@ export default function Subgreddiits(){
                         }}
                     >
                         <h2>Joined Subgreddiits</h2>
+                        
                     </Box>
 
             {/* Other Subgrediits */}
+                <Box 
+                    sx={{
+                        border: 2,
+                        borderColor: 'secondary.main',
+                        borderStyle:'dotted',
+                        borderRadius: 3,
+                        p: 2
+                        }}
+                    >
+                        <h2>Others</h2>
+
+                </Box>
                 </CssBaseline>
             </ThemeProvider>
 
