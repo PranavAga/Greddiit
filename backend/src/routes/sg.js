@@ -27,11 +27,12 @@ async(req,res)=>{
             sg.banned.push(element);
         }
         sg.followers.push(req.id);
-        
+        sg.prev_users.push(req.id);
         const mgErrors = sg.validateSync();
         if (mgErrors) {
           return res.status(400).send(mgErrors.message);
         }
+
         await sg.save();
         return res.send(sg);
     } catch (e) {
@@ -41,7 +42,7 @@ async(req,res)=>{
 });
 /** 
  * Number of people in the Sub Greddiit
- *  Number of posts posted in the Sub Greddiit until now
+ * Number of posts posted in the Sub Greddiit until now
  * Name
  * Desc
  * banned

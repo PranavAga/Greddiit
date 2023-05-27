@@ -16,6 +16,14 @@ const SGSchema=new mongoose.Schema({
         default:[],
         validate: [isNotempty, '{PATH} is empty array']
     },
+    prev_users:{
+        type:[{
+            type: Schema.Types.ObjectId,
+            ref: "User Details"
+        }],
+        default:[],
+        validate: [isNotempty, '{PATH} is empty array']
+    },
     name:{
         type: String,
         required: true,
@@ -53,7 +61,7 @@ const SGSchema=new mongoose.Schema({
     },
     posts:{
         type:[Schema.Types.ObjectId],
-        ref: Post,
+        ref: "Post",
         // default: []
     }
 });

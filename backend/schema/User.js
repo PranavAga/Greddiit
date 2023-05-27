@@ -24,13 +24,6 @@ const UserSchema =new mongoose.Schema({
     age: Number, 
     contact: {
         type:String
-    },
-    pastSGs:{
-        type:[{
-            type: Schema.Types.ObjectId,
-            ref: "Subgreddiit"
-        }],
-        default:[]
     }
 });
 
