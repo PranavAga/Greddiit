@@ -149,7 +149,7 @@ export default function MySG(){
                     <p>{elem.desc}</p>
                     <ul>
                         <li>Followers: {elem.followers.length}</li>
-                        <li>Posts:{elem.posts?.lenght||0}</li>
+                        <li>Posts:{elem.posts?.length||0}</li>
                         <li>Banned words: &nbsp;
                             {
                             elem.banned?.join(', ')
