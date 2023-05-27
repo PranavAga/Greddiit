@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import SG from './Sg';
 
 const UserSchema =new mongoose.Schema({
     uname: {
@@ -24,6 +25,13 @@ const UserSchema =new mongoose.Schema({
     age: Number, 
     contact: {
         type:String
+    },
+    pastSGs:{
+        type:[{
+            type: Schema.Types.ObjectId,
+            ref: SG
+        }],
+        default:[]
     }
 });
 
