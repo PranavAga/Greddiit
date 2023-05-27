@@ -5,13 +5,13 @@ import Post from './Post.js';
 const SGSchema=new mongoose.Schema({
     mod:{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: "User Details",
         required: true
     },
     followers:{
         type:[{
             type: Schema.Types.ObjectId,
-            ref: User
+            ref: "User Details"
         }],
         default:[],
         validate: [isNotempty, '{PATH} is empty array']

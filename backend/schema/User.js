@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose ,{Schema}from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import SG from './Sg';
 
 const UserSchema =new mongoose.Schema({
     uname: {
@@ -29,7 +28,7 @@ const UserSchema =new mongoose.Schema({
     pastSGs:{
         type:[{
             type: Schema.Types.ObjectId,
-            ref: SG
+            ref: "Subgreddiit"
         }],
         default:[]
     }
