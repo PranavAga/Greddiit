@@ -25,8 +25,7 @@ const mySG={
             throw error.response.data;
         }
     },
-    async getSg(id){
-        // console.log('id=',id)
+    async getSG_mod(id){
         try {
             const res= await api.post('/api/sg/mod',{body:{id}});
             // console.log('getSg api',res);
@@ -43,6 +42,14 @@ const mySG={
             return res.data;
         } catch (error) {
             throw error.response.data;
+        }
+    },
+    async getSGs(){
+        try {
+            const res=await api.get('/api/sg/sgs');
+            return res.data;
+        } catch (e) {
+            throw e.response.data;
         }
     }
 }

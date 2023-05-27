@@ -122,4 +122,21 @@ router.post('/mod/users',verify,async(req,res)=>{
     }
 });
 
+router.get('/sgs',verify,
+async(req,res)=>{ 
+    try {
+        const id=req.id;
+        const joined_sg= await SG.find({followers:id})
+        const other_sg= await SG.find({followers:{$ne: id}})
+        
+        const respose={
+          joined_sg,
+            other_sg
+        }
+        return res.send(respose);
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
 export default router;

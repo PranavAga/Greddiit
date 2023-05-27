@@ -3,9 +3,32 @@ import { ThemeProvider } from '@mui/material/styles';
 import {Box} from '@mui/system';
 import { CssBaseline } from "@mui/material";
 
+import mysgAPI from '../api/sg';
+import { useEffect } from 'react';
+
 
 export default function Subgreddiits(){
     const theme=Theme;
+
+
+    const getSGs=async()=>{
+        try {
+            const res=await mysgAPI.getSGs();
+            console.log(res.joined_sg);
+        } catch (error) {
+            if (error.errors[0]){
+                alert(error.errors[0].msg);
+            }
+            else{
+             console.error(error);   
+            }
+        }
+    }
+
+
+    useEffect(()=>{
+        getSGs()
+    },[])
 
     return(
         <main>
@@ -37,7 +60,7 @@ export default function Subgreddiits(){
                         }}
                     >
                         <h2>Joined Subgreddiits</h2>
-                        
+
                     </Box>
 
             {/* Other Subgrediits */}

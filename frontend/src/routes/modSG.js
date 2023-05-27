@@ -32,7 +32,7 @@ export default function ModSG(){
 
     async function theSG(){
         try {
-            const res=await mysgAPI.getSg(id);
+            const res=await mysgAPI.getSG_mod(id);
             setSname(res.name);
             setChecking(false);
         } catch (error) {
