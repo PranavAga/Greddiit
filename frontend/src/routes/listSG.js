@@ -30,7 +30,7 @@ export default function Subgreddiits(){
         }
     }
 
-    function gotoSG(id){
+    const gotoSG=(id)=>{
         navigate('/joinedSG/'+id)
     }
 
@@ -85,7 +85,7 @@ export default function Subgreddiits(){
                                     borderColor: 'secondary.main',
                                     p: 2
                                 }}
-                                onClick={gotoSG(elem.id)}
+                                onClick={()=>gotoSG(elem.id)}
                                 >
                                 <h3>{elem.name}</h3>
                                 {/* <button type='submit' onClick={()=>delSG(elem._id)}>Delete</button> */}

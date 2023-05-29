@@ -1,12 +1,25 @@
-// import React,{Fragment,useState, useEffect} from 'react';
-import CheckStatus from './util/checkStatus';
+import { Fragment } from "react";
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from "@mui/material";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-export default function Home(){
+import Top from './util/top';
+import {Theme} from './util/ColorTheme.js';
+
+export default function JoinedSG(){
+    const params=useParams();
+    const id=params.id;
+    const theme=Theme;
 
     return(
-        <main>
-            <CheckStatus></CheckStatus>
-            <h1>HOME</h1>
-        </main>
+        <Fragment>
+            <Top/>
+            <ThemeProvider theme={theme}><CssBaseline>
+
+            </CssBaseline>
+            </ThemeProvider>
+            
+        </Fragment>
     )
 }
