@@ -6,6 +6,7 @@ import LS from './routes/L-S';
 import MyProfile from './routes/MyProfile'
 import Error from './routes/root-error';
 import ModSG from './routes/modSG';
+import JoinedSG from './routes/SG';
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
 const router = createBrowserRouter([
     {
@@ -21,9 +22,14 @@ const router = createBrowserRouter([
       path: "MyProfile/",
       element: <MyProfile/>,
       
-    },{
+    },
+    {
       path: 'mysg/:id',
       element: <ModSG/>
+    },
+    {
+      path: 'joinedSG/:id',
+      element: <JoinedSG/>
     }
     
 ]);
