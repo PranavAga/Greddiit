@@ -3,7 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import {Box} from '@mui/system';
 import { CssBaseline } from "@mui/material";
 
-import mysgAPI from '../api/sg';
+import mysgAPI from '../api/sg.js';
 import { useEffect, useState } from 'react';
 
 

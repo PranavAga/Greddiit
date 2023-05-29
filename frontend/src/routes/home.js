@@ -16,7 +16,7 @@ import axios from 'axios';
 
 import MyProfile from './MyProfile.js';
 import MySG from './MySG.js';
-import SG from './SG.js'
+import SG from './listSG.js'
 import Top from './util/top';
 
 export default function Home(){
