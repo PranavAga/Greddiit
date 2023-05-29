@@ -2,6 +2,7 @@ import {Theme} from './util/ColorTheme.js';
 import { ThemeProvider } from '@mui/material/styles';
 import {Box} from '@mui/system';
 import { CssBaseline } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 import mysgAPI from '../api/sg.js';
 import { useEffect, useState } from 'react';
@@ -9,6 +10,7 @@ import { useEffect, useState } from 'react';
 
 export default function Subgreddiits(){
     const theme=Theme;
+    const navigate=useNavigate();
     const [all_joinedSG,setAll_joinedSG]=useState()
     const [all_otherSG,setAll_otherSG]=useState()
 
@@ -28,6 +30,9 @@ export default function Subgreddiits(){
         }
     }
 
+    function gotoSG(id){
+        navigate('/joinedSG/'+id)
+    }
 
     useEffect(()=>{
         getSGs()
@@ -79,7 +84,9 @@ export default function Subgreddiits(){
                                     borderBottom:1,
                                     borderColor: 'secondary.main',
                                     p: 2
-                                }}>
+                                }}
+                                onClick={gotoSG(elem.id)}
+                                >
                                 <h3>{elem.name}</h3>
                                 {/* <button type='submit' onClick={()=>delSG(elem._id)}>Delete</button> */}
                                 <p>{elem.desc}</p>
