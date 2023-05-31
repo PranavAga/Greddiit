@@ -63,7 +63,9 @@ const SGSchema=new mongoose.Schema({
         type:[Schema.Types.ObjectId],
         ref: "Post",
         // default: []
-    }
+    },
+    img: 
+      { data: Buffer, contentType: String }
 });
 function isNotempty(arr) {
     return arr.length>0;

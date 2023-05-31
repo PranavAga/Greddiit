@@ -1,4 +1,5 @@
 import express from'express';
+import multer from 'multer'
 import Users from '../../schema/User.js'
 import SG from '../../schema/Sg.js';
 import verify from '../middleware/verify.js'
@@ -6,17 +7,22 @@ import verify from '../middleware/verify.js'
 import {body,param,validationResult} from 'express-validator';
 
 const router=express.Router();
+const upload = multer({ storage: multer.memoryStorage() })
+
 router.use(express.json());
 
 router.post('/create',
 verify, 
+upload.single('image'),
 async(req,res)=>{
     try {
-        const {name,desc,tags,banned}=req.body;
+        const tags=req.body.tags.split(" ")
+        const banned=req.body.banned.split(" ")
+        console.log(banned,tags,req.file,req.body);
         const sg= new SG({
             mod:req.id,
-            name:name,
-            desc:desc
+            name:req.body.name,
+            desc:req.body.desc
         })
         for (let index = 0; index < tags.length; index++) {
             const element = tags[index];
@@ -28,6 +34,9 @@ async(req,res)=>{
         }
         sg.followers.push(req.id);
         sg.prev_users.push(req.id);
+        if(req.file){
+            console.log("has req.file")
+            sg.img.data=req.file.buffer}
         const mgErrors = sg.validateSync();
         if (mgErrors) {
           return res.status(400).send(mgErrors.message);

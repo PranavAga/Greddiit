@@ -12,6 +12,7 @@ export default function MySG(){
     const theme=Theme;
     const [lock,setLock]=useState(true);
     const [nname,setNname]=useState();
+    const [nimage,setNimage]=useState('');
     const [ndesc,setNdesc]=useState();
     const [ntags,setNtags]=useState();
     const [nban,setNban]=useState();
@@ -34,24 +35,30 @@ export default function MySG(){
         else{
             setLock(true);
         }
-    },[nname,ndesc,ntags,nban])
+    },[nname,ntags,nban])
     const resetVals=()=>{
         setNdesc("")
         setNname("")
         setNtags("")
         setNban("")
+        // setNimage('')
     }
     const createSG=async ()=>{
         const prev=lock;
         setLock(true);
         const tags=ntags?.trim();
-        const ban=nban?.trim();        
+        const ban=nban?.trim();      
+        const formData=new FormData();
+        formData.append('image',nimage);
+        formData.append('name',nname)
+        formData.append('desc',ndesc)
+        formData.append('tags',tags) //.split(" ")
+        formData.append('banned',ban?ban:"")  
         try {
-            await mysgAPI.create(nname,ndesc,tags.split(" "),ban.split(" "));
+            await mysgAPI.create(formData);
             resetVals();
             setRef(!ref);
             getmySG();
-            // console.log('SG created!')
         } catch (error) {
             if (error.errors[0]){
                 alert(error.errors[0].msg);
@@ -60,7 +67,6 @@ export default function MySG(){
             console.error(error);
             }
         }
-        // console.log('setting lock to:',prev)
         setLock(prev);
     }
     const getmySG=async(e)=>{
@@ -108,6 +114,9 @@ export default function MySG(){
             <form id='make'>
                 <label>Name:</label><br></br>
                 <input title="Required" required id='nname' type='text' value={nname} onChange={(e)=>{setNname(e.target.value)}}>
+                </input><br></br><br></br>
+                <label>Image:</label><br></br>
+                <input id='nimage' type='file' accept=".png, .jpg, .jpeg" onChange={(e)=>{setNimage(e.target.files[0])}}>
                 </input><br></br><br></br>
                 <label>Description:</label><br></br>
                 <input id='ndesc' type='text' value={ndesc} onChange={(e)=>{setNdesc(e.target.value)}} ></input>

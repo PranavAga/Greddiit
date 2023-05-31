@@ -10,11 +10,11 @@ const api ={
     get(uri){
         return axios.get("http://localhost:4000"+uri);
     },
-    // getp(uri,payload){
-    //     return axios.get(uri,payload);
-    // },
     post(uri,payload){
         return axios.post("http://localhost:4000"+uri,payload.body,getData(payload));
+    },
+    postFrom(uri,payload){
+        return axios.post("http://localhost:4000"+uri,payload);
     },
     delete(uri,payload){
         return axios.delete("http://localhost:4000"+uri,payload);
