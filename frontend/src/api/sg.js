@@ -27,6 +27,22 @@ const mySG={
             throw error.response.data;
         }
     },
+    async acceptUser(id){
+        try {
+            const res=await api.post('/api/sg/mod/accept',{body:{id}});
+            return res.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    }, 
+    async rejectUser(id){
+        try {
+            const res=await api.post('/api/sg/mod/reject',{body:{id}});
+            return res.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    }, 
     async joinSG(sg_id){
         try {
             console.log(sg_id)
@@ -53,9 +69,9 @@ const mySG={
             throw error.response.data;
         }
     },
-    async getUsers(id){
+    async getDetails(id){
         try {
-            const res= await api.post('/api/sg/mod/users',{
+            const res= await api.post('/api/sg/mod/details',{
                 body:{id}
             });
             return res.data;

@@ -26,9 +26,11 @@ export default function ModSG(){
     }
 
     const [tab,setTab]=useState('users');
+    const [valchange,setValchange]=useState();
     const[sname,setSname]=useState();
     const [checking,setChecking]=useState(true);
     const [users,setUsers]=useState();
+    const [reqs,setReqs]=useState(null);
 
     async function theSG(){
         try {
@@ -44,11 +46,11 @@ export default function ModSG(){
             }
         }
     }
-    async function theUsers(){
+    async function theDetails(){
         try {
-            const res=await mysgAPI.getUsers(id);
-            // console.log(res.users)
+            const res=await mysgAPI.getDetails(id);
             setUsers(res.users);
+            setReqs(res.reqs);
         } catch (error) {
             if (error.errors[0]){
                 return navigate('/');
@@ -58,9 +60,35 @@ export default function ModSG(){
             }
         }
     }
+
+    const acceptUser=async(user_id)=>{
+        try {
+            await mysgAPI.acceptUser(user_id);
+        } catch (error) {
+            if (error.errors[0]){
+                alert(error.errors[0].msg);
+            }
+            else{
+            console.error(error);   
+            }
+        }
+    }
+    const rejectUser=async(user_id)=>{
+        try {
+            await mysgAPI.rejectUser(user_id);
+        } catch (error) {
+            if (error.errors[0]){
+                alert(error.errors[0].msg);
+            }
+            else{
+            console.error(error);   
+            }
+        }
+    }
+    //diff API class for updating diff parts
     useEffect(()=>{
         theSG();
-        theUsers();
+        theDetails();
     },[]);
     if(checking){
         return <h1>Loading</h1>
@@ -92,6 +120,21 @@ export default function ModSG(){
                             )
                         }
                         </ul>
+                        </TabPanel>
+                        <TabPanel value='jr'>
+                            <Box sx={{p: 2}}>
+                                { 
+                                !reqs.length==0?(
+                                    reqs?.map((elem)=>
+                                    <>
+                                    <h3>{elem.fname}{elem.lname}</h3>
+                                    <p>{elem.uname}</p>
+                                    <button type='button' onClick={()=>acceptUser(elem._id)}>Accept</button>
+                                    <button type='button' onClick={()=>rejectUser(elem._id)}>Reject</button>
+                                    </>)
+                                ):(<h3>No requests found</h3>)
+                                }
+                            </Box>
                         </TabPanel>
                     </TabContext>
                 </Box>

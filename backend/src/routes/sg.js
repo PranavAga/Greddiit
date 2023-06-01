@@ -128,7 +128,7 @@ async(req,res)=>{
         return res.status(500);
     }
 });
-router.post('/mod/users',verify,async(req,res)=>{
+router.post('/mod/details',verify,async(req,res)=>{
     try {
         const {id}=req.body;
         const sg=await SG.findById(id);
@@ -140,6 +140,11 @@ router.post('/mod/users',verify,async(req,res)=>{
             const user=await Users.findById(sg.followers[i]).select('uname');
             users.push(user);
         }
+        //populate?
+        // for(let i=0; i<sg.followers.length;i++){
+        //     const user=await Users.findById(sg.followers[i]).select('uname');
+        //     users.push(user);
+        // }
         return res.send({users});
     } catch (error) {
         console.error(error);
