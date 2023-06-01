@@ -36,6 +36,14 @@ const mySG={
             throw error.response.data;
         }
     },
+    async getSG_joined(id){
+        try {
+            const res= await api.post('/api/sg/joined',{body:{id}});
+            return res.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
     async getUsers(id){
         try {
             const res= await api.post('/api/sg/mod/users',{

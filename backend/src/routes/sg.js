@@ -113,6 +113,23 @@ router.post('/mod',verify,async(req,res)=>{
         return res.status(500);
     }
 });
+router.post('/joined',
+// verify,
+async(req,res)=>{
+    try {
+        const {id}=req.body;
+        const sg=await SG.findById(id);
+
+        //verify has joined
+        // if(sg.mod._id!=req.id){
+        //     return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
+        // }
+        return res.send(sg);
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
 router.post('/mod/users',verify,async(req,res)=>{
     try {
         const {id}=req.body;
