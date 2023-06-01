@@ -24,6 +24,13 @@ const SGSchema=new mongoose.Schema({
         default:[],
         validate: [isNotempty, '{PATH} is empty array']
     },
+    req_users:{
+        type:[{
+            type: Schema.Types.ObjectId,
+            ref: "User Details"
+        }],
+        default:[],
+    },
     name:{
         type: String,
         required: true,

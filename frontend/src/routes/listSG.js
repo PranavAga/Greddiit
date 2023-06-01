@@ -29,9 +29,20 @@ export default function Subgreddiits(){
             }
         }
     }
+    const joinSG=async(sg_id)=>{
+        try {
+            await mysgAPI.joinSG(sg_id);
+        } catch (error) {
+            if (error.errors[0]){
+                alert(error.errors[0].msg);
+            }
+            else{
+             console.error(error);   
+            }
+        }
+    }
 
     const gotoSG=(id)=>{
-        // console.log(id)
         navigate('/joinedSG/'+id)
     }
 
@@ -57,13 +68,7 @@ export default function Subgreddiits(){
                 >
                     <h2>Search Bar</h2>
                 </Box>
-                    {/* 
-                    1. Number of people in the Sub Greddiit
-                    2. Number of posts posted in the Sub Greddiit until now
-                    3. Name
-                    4. Description
-                    5. Comma-separated list of banned keywords
-                    */}
+
             {/* Joined Subgrediits */}
                 <Box 
                     sx={{
@@ -89,7 +94,6 @@ export default function Subgreddiits(){
                                 onClick={()=>gotoSG(elem._id)}
                                 >
                                 <h3>{elem.name}</h3>
-                                {/* <button type='submit' onClick={()=>delSG(elem._id)}>Delete</button> */}
                                 <p>{elem.desc}</p>
                                 <ul>
                                     <li>Followers: {elem.followers.length}</li>
@@ -103,7 +107,7 @@ export default function Subgreddiits(){
                             </Box>
                             </>)
                         }
-                    </Box>
+                </Box>
 
             {/* Other Subgrediits */}
                 <Box 
@@ -128,7 +132,6 @@ export default function Subgreddiits(){
                                     p: 2
                                 }}>
                                 <h3>{elem.name}</h3>
-                                {/* <button type='submit' onClick={()=>delSG(elem._id)}>Delete</button> */}
                                 <p>{elem.desc}</p>
                                 <ul>
                                     <li>Followers: {elem.followers.length}</li>
@@ -139,6 +142,8 @@ export default function Subgreddiits(){
                                         }
                                     </li>
                                 </ul>
+                                <br></br>
+                                <button type='button' onClick={()=>joinSG(elem._id)}>Join</button>
                             </Box>
                             </>)
                         }

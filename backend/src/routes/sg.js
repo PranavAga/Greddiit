@@ -18,7 +18,6 @@ async(req,res)=>{
     try {
         const tags=req.body.tags.split(" ")
         const banned=req.body.banned.split(" ")
-        console.log(banned,tags,req.file,req.body);
         const sg= new SG({
             mod:req.id,
             name:req.body.name,
@@ -35,7 +34,6 @@ async(req,res)=>{
         sg.followers.push(req.id);
         sg.prev_users.push(req.id);
         if(req.file){
-            console.log("has req.file")
             sg.img.data=req.file.buffer}
         const mgErrors = sg.validateSync();
         if (mgErrors) {
@@ -148,7 +146,29 @@ router.post('/mod/users',verify,async(req,res)=>{
         return res.status(500);
     }
 });
-
+router.post('/request',verify,async(req,res)=>{
+    try {
+        const user_id=req.id;
+        const {sg_id}=req.body;
+        console.log(user_id,sg_id)
+        const sg=await SG.findById(sg_id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        };
+        if(sg.followers.includes(user_id)){
+            return res.status(400).send({errors: [{msg: "Already joined"}]})
+        }
+        if(sg.req_users.includes(user_id)){
+            return res.status(400).send({errors: [{msg: "Request already sent"}]})
+        }
+        sg.req_users.push(user_id)
+        await sg.save();
+        return
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
 router.get('/sgs',verify,
 async(req,res)=>{ 
     try {

@@ -27,6 +27,15 @@ const mySG={
             throw error.response.data;
         }
     },
+    async joinSG(sg_id){
+        try {
+            console.log(sg_id)
+            await api.post('/api/sg/request',{body:{sg_id}});
+            return;
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
     async getSG_mod(id){
         try {
             const res= await api.post('/api/sg/mod',{body:{id}});
