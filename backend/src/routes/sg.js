@@ -128,10 +128,13 @@ async(req,res)=>{
         return res.status(500);
     }
 });
-router.post('/mod/details',verify,async(req,res)=>{
+router.post('/mod/users',verify,async(req,res)=>{
     try {
         const {id}=req.body;
         const sg=await SG.findById(id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
         if(sg.mod._id!=req.id){
             return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
         };
@@ -140,12 +143,82 @@ router.post('/mod/details',verify,async(req,res)=>{
             const user=await Users.findById(sg.followers[i]).select('uname');
             users.push(user);
         }
-        //populate?
-        // for(let i=0; i<sg.followers.length;i++){
-        //     const user=await Users.findById(sg.followers[i]).select('uname');
-        //     users.push(user);
-        // }
         return res.send({users});
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.post('/mod/reqs',verify,async(req,res)=>{
+    try {
+        const {id}=req.body;
+        const sg=await SG.findById(id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
+        if(sg.mod._id!=req.id){
+            return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
+        };
+        const req_users=Array()
+        for(let i=0; i<sg.req_users.length;i++){
+            const user=await Users.findById(sg.req_users[i]);
+            req_users.push(user);
+        }
+        return res.send({req_users});
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.post('/mod/accept',verify,async(req,res)=>{
+    try {
+        const {id,user_id}=req.body;
+        const sg=await SG.findById(id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
+        if(sg.mod._id!=req.id){
+            return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
+        };
+        const new_user= await Users.findById(user_id)
+        if(!new_user){
+            return res.status(400).send({errors: [{msg: "User not found"}]})
+        }
+        if(sg.followers.includes(user_id)){
+            return res.status(400).send({errors: [{msg: "Already joined"}]})
+        }
+        sg.followers.push(user_id);
+        sg.prev_users.push(user_id);
+        const index = sg.req_users.indexOf(user_id);
+        if (index > -1) {
+            sg.req_users.splice(index, 1);
+        }
+        await sg.save()
+        return res.send()
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.post('/mod/reject',verify,async(req,res)=>{
+    try {
+        const {id,user_id}=req.body;
+        const sg=await SG.findById(id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
+        if(sg.mod._id!=req.id){
+            return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
+        };
+        if(sg.followers.includes(user_id)){
+            return res.status(400).send({errors: [{msg: "Already joined"}]})
+        }
+        const index = sg.req_users.indexOf(user_id);
+        if (index > -1) {
+            sg.req_users.splice(index, 1);
+        }
+        await sg.save()
+        return res.send()
     } catch (error) {
         console.error(error);
         return res.status(500);
@@ -155,7 +228,6 @@ router.post('/request',verify,async(req,res)=>{
     try {
         const user_id=req.id;
         const {sg_id}=req.body;
-        console.log(user_id,sg_id)
         const sg=await SG.findById(sg_id);
         if(!sg){
             return res.status(400).send({errors: [{msg: "SG not found"}]})

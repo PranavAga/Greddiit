@@ -13,6 +13,8 @@ import { useParams } from 'react-router-dom';
 import Top from './util/top';
 import {Theme} from './util/ColorTheme.js';
 import mysgAPI from '../api/sg';
+import JoinRequests from './modSG/joinreq';
+import Users from './modSG/users';
 
 
 export default function ModSG(){
@@ -26,11 +28,8 @@ export default function ModSG(){
     }
 
     const [tab,setTab]=useState('users');
-    const [valchange,setValchange]=useState();
     const[sname,setSname]=useState();
     const [checking,setChecking]=useState(true);
-    const [users,setUsers]=useState();
-    const [reqs,setReqs]=useState(null);
 
     async function theSG(){
         try {
@@ -46,49 +45,8 @@ export default function ModSG(){
             }
         }
     }
-    async function theDetails(){
-        try {
-            const res=await mysgAPI.getDetails(id);
-            setUsers(res.users);
-            setReqs(res.reqs);
-        } catch (error) {
-            if (error.errors[0]){
-                return navigate('/');
-            }
-            else{
-             console.error(error);   
-            }
-        }
-    }
-
-    const acceptUser=async(user_id)=>{
-        try {
-            await mysgAPI.acceptUser(user_id);
-        } catch (error) {
-            if (error.errors[0]){
-                alert(error.errors[0].msg);
-            }
-            else{
-            console.error(error);   
-            }
-        }
-    }
-    const rejectUser=async(user_id)=>{
-        try {
-            await mysgAPI.rejectUser(user_id);
-        } catch (error) {
-            if (error.errors[0]){
-                alert(error.errors[0].msg);
-            }
-            else{
-            console.error(error);   
-            }
-        }
-    }
-    //diff API class for updating diff parts
     useEffect(()=>{
         theSG();
-        theDetails();
     },[]);
     if(checking){
         return <h1>Loading</h1>
@@ -98,7 +56,11 @@ export default function ModSG(){
             {/* {if} */}
             <Top/>
             <ThemeProvider theme={theme}><CssBaseline>
-            <Box>
+            <Box
+            sx={{
+                p:2
+            }}
+            >
                 <h1>{sname}</h1>
                 <button onClick={()=>{navigate('/')}}>MySGs</button>
                 <Box>
@@ -110,31 +72,10 @@ export default function ModSG(){
                             <Tab label='Reported' value='Reported'></Tab>
                         </Tabs>
                         <TabPanel value='users'>
-                        <ul>
-                            <h3>Current users:</h3>
-                        {
-                            // console.log(users)
-                            users?.map((elem)=>
-                                // console.log(elem.uname)
-                                <li>{elem.uname}</li>
-                            )
-                        }
-                        </ul>
+                            <Users/>
                         </TabPanel>
                         <TabPanel value='jr'>
-                            <Box sx={{p: 2}}>
-                                { 
-                                !reqs.length==0?(
-                                    reqs?.map((elem)=>
-                                    <>
-                                    <h3>{elem.fname}{elem.lname}</h3>
-                                    <p>{elem.uname}</p>
-                                    <button type='button' onClick={()=>acceptUser(elem._id)}>Accept</button>
-                                    <button type='button' onClick={()=>rejectUser(elem._id)}>Reject</button>
-                                    </>)
-                                ):(<h3>No requests found</h3>)
-                                }
-                            </Box>
+                            <JoinRequests/>
                         </TabPanel>
                     </TabContext>
                 </Box>
