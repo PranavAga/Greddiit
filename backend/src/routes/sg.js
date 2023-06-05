@@ -238,6 +238,9 @@ router.post('/request',verify,async(req,res)=>{
         if(sg.req_users.includes(user_id)){
             return res.status(400).send({errors: [{msg: "Request already sent"}]})
         }
+        if(sg.prev_users.includes(user_id)){
+            return res.status(400).send({errors: [{msg: "Once leaft, you cannot enter :/"}]})
+        }
         sg.req_users.push(user_id)
         await sg.save();
         return
@@ -254,6 +257,7 @@ async(req,res)=>{
         const other_sg= await SG.find({followers:{$ne: id}})
         
         const respose={
+            userID:id,
           joined_sg,
             other_sg
         }
@@ -263,4 +267,33 @@ async(req,res)=>{
         return res.status(500);
     }
 });
+router.post('/sgs/leave',verify,async(req,res)=>{
+    try {
+        const {sg_id}=req.body;
+        const sg=await SG.findById(sg_id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
+        if(sg.mod._id==req.id){
+            return res.status(400).send({errors: [{msg: "Moderator can't leave the SG !"}]})
+        };
+        if(!sg.followers.includes(req.id)){
+            return res.status(400).send({errors: [{msg: "Not joined this SG"}]})
+        }
+        if(!sg.prev_users.includes(req.id)){
+            sg.prev_users.push(req.id);
+        }
+
+        const index = sg.followers.indexOf(req.id);
+        if (index > -1) {
+            sg.followers.splice(index, 1);
+        }
+        await sg.save()
+        return res.send()
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+
 export default router;

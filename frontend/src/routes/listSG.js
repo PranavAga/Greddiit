@@ -11,15 +11,17 @@ import { useEffect, useState } from 'react';
 export default function Subgreddiits(){
     const theme=Theme;
     const navigate=useNavigate();
+
     const [all_joinedSG,setAll_joinedSG]=useState()
     const [all_otherSG,setAll_otherSG]=useState()
-
+    const [userID,setUserID]=useState()
 
     const getSGs=async()=>{
         try {
             const res=await mysgAPI.getSGs();
             setAll_joinedSG(res.joined_sg);
             setAll_otherSG(res.other_sg);
+            setUserID(res.userID);
         } catch (error) {
             if (error.errors[0]){
                 alert(error.errors[0].msg);
@@ -41,13 +43,25 @@ export default function Subgreddiits(){
             }
         }
     }
-
+    const leaveSG=async(sg_id)=>{
+        try {
+            await mysgAPI.leaveSG(sg_id);
+            getSGs();
+        } catch (error) {
+            if (error.errors[0]){
+                alert(error.errors[0].msg);
+            }
+            else{
+             console.error(error);   
+            }
+        }
+    }
     const gotoSG=(id)=>{
         navigate('/joinedSG/'+id)
     }
 
     useEffect(()=>{
-        getSGs()
+        getSGs();
     },[])
 
     return(
@@ -84,15 +98,14 @@ export default function Subgreddiits(){
                             all_joinedSG?.map((elem)=><>
                             <Box
                                 sx={{
-                                backgroundColor: 'white',
-
+                                    backgroundColor: 'white',
                                     borderTop:1,
                                     borderBottom:1,
                                     borderColor: 'secondary.main',
                                     p: 2
                                 }}
-                                onClick={()=>gotoSG(elem._id)}
                                 >
+                                <Box onClick={()=>gotoSG(elem._id)}>
                                 <h3>{elem.name}</h3>
                                 <p>{elem.desc}</p>
                                 <ul>
@@ -104,6 +117,8 @@ export default function Subgreddiits(){
                                         }
                                     </li>
                                 </ul>
+                                </Box>
+                                <button type='submit' onClick={()=>leaveSG(elem._id)} disabled={elem.mod===userID}>Leave</button>
                             </Box>
                             </>)
                         }

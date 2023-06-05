@@ -96,6 +96,14 @@ const mySG={
         } catch (e) {
             throw e.response.data;
         }
+    },
+    async leaveSG(sg_id){
+        try {
+            await api.post('/api/sg/sgs/leave',{body:{sg_id}});
+            return;
+        } catch (e) {
+            throw e.response.data;
+        }
     }
 }
 export default mySG; 
