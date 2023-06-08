@@ -255,13 +255,24 @@ async(req,res)=>{
         const id=req.id;
         const joined_sg= await SG.find({followers:id})
         const other_sg= await SG.find({followers:{$ne: id}})
-        
-        const respose={
-            userID:id,
-          joined_sg,
-            other_sg
+
+        //storing date of creation
+        const joined_sg_dates=[]
+        const other_sg_dates=[]
+        for (let index = 0; index < joined_sg.length; index++) {
+            joined_sg_dates[index]= joined_sg[index]._id.getTimestamp();
         }
-        return res.send(respose);
+        for (let index = 0; index < other_sg.length; index++) {
+            other_sg_dates[index]= other_sg[index]._id.getTimestamp();
+        }
+        const response={
+            userID:id,
+            joined_sg,
+            joined_sg_dates,
+            other_sg,
+            other_sg_dates
+        }
+        return res.send(response);
     } catch (error) {
         console.error(error);
         return res.status(500);

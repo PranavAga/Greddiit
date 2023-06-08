@@ -1,14 +1,14 @@
 import {Theme} from './util/ColorTheme.js';
 import { ThemeProvider } from '@mui/material/styles';
 import {Box} from '@mui/system';
-import { CssBaseline, Select, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { CssBaseline, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import Fuse from 'fuse.js';
 
 import mysgAPI from '../api/sg.js';
 import { useEffect, useState } from 'react';
 
-
+const sortOptions=['name','followers','date']
 export default function Subgreddiits(){
     const theme=Theme;
     const navigate=useNavigate();
@@ -17,9 +17,12 @@ export default function Subgreddiits(){
     const [all_otherSG,setAll_otherSG]=useState()
     const [skimmed_joinedSG,setSkimmed_joinedSG]=useState()
     const [skimmed_otherSG,setSkimmed_otherSG]=useState()
+    const [sorted_skimmed_joinedSG,setSorted_skimmed_joinedSG]=useState()
+    const [sorted_skimmed_otherSG,setSorted_skimmed_otherSG]=useState()
     const [userID,setUserID]=useState()
     const [tags,setTags]=useState()
     const [filterT,setFilterT]=useState(()=>[])
+    const [sortops,setSortops]=useState(()=>[])
 
     const search_joined= new Fuse(all_joinedSG, { 
         keys: ["name"]    
@@ -33,10 +36,19 @@ export default function Subgreddiits(){
             const res=await mysgAPI.getSGs();
             const joined=res.joined_sg
             const other=res.other_sg
-            setAll_joinedSG(res.joined_sg);
-            setAll_otherSG(res.other_sg);
-            setSkimmed_joinedSG(res.joined_sg);
-            setSkimmed_otherSG(res.other_sg);
+            for(let i=0;i<joined?.length;i++){
+                joined[i].date=res.joined_sg_dates?.[i]
+            }
+            for(let i=0;i<other?.length;i++){
+                other[i].date=res.other_sg_dates?.[i]
+            }
+            
+            setAll_joinedSG(joined);
+            setAll_otherSG(other);
+            setSkimmed_joinedSG(joined);
+            setSkimmed_otherSG(other);
+            setSorted_skimmed_joinedSG(joined);
+            setSorted_skimmed_otherSG(other);
             setUserID(res.userID);
             getTags(other.concat(joined))
         } catch (error) {
@@ -62,12 +74,18 @@ export default function Subgreddiits(){
     }
     const setSearchSG=(searchKey)=>{
         if (searchKey?.trim()){
-            setSkimmed_joinedSG(search_joined.search(searchKey))
-            setSkimmed_otherSG(search_other.search(searchKey))
+            const searched_joined=search_joined.search(searchKey)
+            const searched_other=search_other.search(searchKey)
+            setSkimmed_joinedSG(searched_joined)
+            setSkimmed_otherSG(searched_other)
+            setSorted_skimmed_joinedSG(searched_joined)
+            setSorted_skimmed_otherSG(searched_other)
         }
         else{
             setSkimmed_joinedSG(all_joinedSG);
             setSkimmed_otherSG(all_otherSG);
+            setSorted_skimmed_joinedSG(all_joinedSG)
+            setSorted_skimmed_otherSG(all_otherSG)
         }
     }
     const joinSG=async(sg_id)=>{
@@ -100,20 +118,36 @@ export default function Subgreddiits(){
     }
     const handleFilter = (event, newFormats) => {
         setFilterT(newFormats);
-        console.log('tags reset')
-      };
-    
+    };
+    const handleSort=(e)=>{
+        setSortops(
+            typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value,
+        );
+    }
     function hasTag(sg_t){
-        console.log(sg_t)
-        console.log(tags)
         for(let i=0;i<sg_t.length;i++){
             if(filterT.includes(sg_t[i])){
-                console.log('true')
                 return true;
             }
         }
-        console.log('false')
         return false;
+    };
+    function sortCmp(sortby,a,b){
+        if(sortby==='name'){
+            return (a.item?a.item:a).name.localeCompare((b.item?b.item:b).name)
+        }
+        else if(sortby==='followers'){
+            return (b.item?b.item:b).followers.length-(a.item?a.item:a).followers.length
+        }
+        else if(sortby=='date'){
+            const da = new Date((a.item?a.item:a).date);
+            const db = new Date((b.item?b.item:b).date);
+            return db-da
+        }
+        return
+    }
+    function sortedSGs(sgs){
+        return sgs?.slice().sort((a,b)=>((sortops[0]?sortCmp(sortops[0],a,b):0)||(sortops[1]?sortCmp(sortops[1],a,b):0)||(sortops[2]?sortCmp(sortops[2],a,b):0)))
     }
     useEffect(()=>{
         getSGs();
@@ -126,16 +160,32 @@ export default function Subgreddiits(){
             {/* Search and Filters */}
                 <Box 
                 sx={{
-                    // border: 2,
-                    // borderColor: 'secondary.main',
-                    // borderStyle:'dotted',
-                    // borderRadius: 3,
                     display:'flex',
                 flexDirection: 'column',
                 alignItems:"center",
                 justifyContent:"center"}}
                 >
                     <TextField size='large' placeholder="Search a subgreddiit by it's name" onChange={(e)=>setSearchSG(e.target.value)} sx={{width: 270}}></TextField>
+                    <br></br><h3>Sort by</h3>
+                    <InputLabel>{sortops.map((op)=>
+                    (op+' ')
+                    )}</InputLabel>
+                    <Select
+                    multiple
+                    value={sortops}
+                    onChange={handleSort}
+                    >
+                        {
+                            sortOptions.map((option)=>(
+                                <MenuItem
+                                key={option}
+                                value={option}
+                                >
+                                {(option==='date'?'date(earlier)':option)}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
                     <br></br><h3>Filter by Tag</h3>
                     <ToggleButtonGroup
                     value={filterT}
@@ -145,7 +195,7 @@ export default function Subgreddiits(){
                     >
                         {
                         tags?.map((tag)=>
-                        <ToggleButton value={tag} onClick={()=>{console.log(filterT)}}>
+                        <ToggleButton value={tag}>
                             {tag}
                         </ToggleButton>
                         )
@@ -165,7 +215,7 @@ export default function Subgreddiits(){
                     >
                         <h2>Joined Subgreddiits</h2>
                         {
-                            skimmed_joinedSG?.map((elem)=><>
+                            (sortops?.length===0?skimmed_joinedSG:sortedSGs(sorted_skimmed_joinedSG))?.map((elem)=><>
                             {
                             (hasTag((elem.item?elem.item:elem).tags))&&
                             <Box
