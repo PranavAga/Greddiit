@@ -258,7 +258,7 @@ export default function Subgreddiits(){
                     >
                         <h2>Others</h2>
                         {
-                            skimmed_otherSG?.map((elem)=><>
+                            (sortops?.length===0?skimmed_otherSG:sortedSGs(sorted_skimmed_otherSG))?.map((elem)=><>
                             {(hasTag((elem.item?elem.item:elem).tags))&&
                             <Box
                                 sx={{
