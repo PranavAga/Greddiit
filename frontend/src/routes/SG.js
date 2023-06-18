@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { ThemeProvider } from '@mui/material/styles';
-import { Box, CssBaseline } from "@mui/material";
+import TextField from '@mui/material/TextField';
+import { Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ import {Buffer} from 'buffer';
 import axios from "axios";
 
 import mysgAPI from "../api/sg";
+import postsAPI from "../api/posts"
 import Top from './util/top';
 import {Theme} from './util/ColorTheme.js';
 
@@ -24,6 +26,7 @@ export default function JoinedSG(){
     const[sdetails,setSdetails]=useState();
     const[imageb,setImageb]=useState();
     const[hasImage,setHasImage]=useState(false);
+    const[openCreate,setOpenCreate]=useState(false);
     async function theSG(){
         try {
             const res=await mysgAPI.getSG_joined(id);
@@ -46,7 +49,23 @@ export default function JoinedSG(){
             }
         }
     }
-
+    const handleSubmitPost= async()=>{
+        const title=document.getElementById("ntitle").value;
+        const content=document.getElementById("ncontent").value;
+        try {
+            const res=await postsAPI.create(title,content,id);
+            setOpenCreate(false)
+            
+        } catch (error) {
+            if (error.errors?.[0]){
+                return navigate('/');
+            }
+            else{
+             console.error(error);   
+            }
+        }
+        
+    }
     useEffect(()=>{
         theSG();
     },[]);
@@ -97,23 +116,26 @@ export default function JoinedSG(){
                             display: 'flex',
                             p:2,
                             border:2,
-                            width:'100%'
+                            // width:'100%',
+                            flexDirection: 'column'
                         }}
                     >
-                    Hello
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
+                        <Button onClick={()=>setOpenCreate(true)}
+                        >Create Post !</Button>
+                        <Dialog open={openCreate} onClose={()=>setOpenCreate(false)}>
+                            <DialogTitle>Create</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Add a post to the Subgreddiit. Use appropriate language.
+                                </DialogContentText>
+                                <TextField id="ntitle" label="Title" variant="standard" /><br></br>
+                                <TextField id="ncontent" label="Content" variant="standard" />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={()=>setOpenCreate(false)}>Cancel</Button>
+                                <Button onClick={handleSubmitPost}>Submit</Button>
+                            </DialogActions>
+                        </Dialog>
                     <br></br>
                     <br></br>
                     <br></br>
