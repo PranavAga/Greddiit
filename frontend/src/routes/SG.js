@@ -4,7 +4,9 @@ import { CssBaseline } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import {Buffer} from 'buffer'
+import {Buffer} from 'buffer';
+import axios from "axios";
+
 import mysgAPI from "../api/sg";
 import Top from './util/top';
 import {Theme} from './util/ColorTheme.js';
@@ -14,6 +16,10 @@ export default function JoinedSG(){
     const id=params.id;
     const theme=Theme;
     const navigate=useNavigate();
+    const token=localStorage.getItem('token');
+    if (token){
+        axios.defaults.headers.common['x-auth-token']=token;
+    }
 
     const[sname,setSname]=useState();
     const[imageb,setImageb]=useState();

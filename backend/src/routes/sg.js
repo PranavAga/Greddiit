@@ -112,16 +112,16 @@ router.post('/mod',verify,async(req,res)=>{
     }
 });
 router.post('/joined',
-// verify,
+verify,
 async(req,res)=>{
     try {
         const {id}=req.body;
         const sg=await SG.findById(id);
 
-        //verify has joined
-        // if(sg.mod._id!=req.id){
-        //     return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
-        // }
+        // verify has joined
+        if(sg.mod._id!=req.id){
+            return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
+        }
         return res.send(sg);
     } catch (error) {
         console.error(error);
