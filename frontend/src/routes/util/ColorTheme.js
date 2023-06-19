@@ -14,10 +14,16 @@ export const Theme=createTheme({
             black: '#050505'
         },
         secondary:{
-            dark: 'a2a82a',
+            dark: '#a2a82a',
             main: '#d1d841',
             light: '#f4f5e6'
         },
+        upVote:{
+            main:'#a2a82a'
+        },
+        downVote:{
+            main:'#d63504'
+        }
         
         
         
