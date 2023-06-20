@@ -101,20 +101,24 @@ export default function JoinedSG(){
     const handleSubmitPost= async()=>{
         const title=document.getElementById("ntitle").value;
         const content=document.getElementById("ncontent").value;
-        try {
-            const res=await postsAPI.create(title,content,id);
-            setOpenCreate(false);
-            getPosts();
-            
-        } catch (error) {
-            if (error.errors?.[0]){
-                return navigate('/');
-            }
-            else{
-             console.error(error);   
+        if(title?.trim()&&content?.trim()){
+            try {
+                const res=await postsAPI.create(title,content,id);
+                setOpenCreate(false);
+                getPosts();
+                
+            } catch (error) {
+                if (error.errors?.[0]){
+                    return navigate('/');
+                }
+                else{
+                 console.error(error);   
+                }
             }
         }
-        
+        else{
+            alert("Title and content cannot be empty.")
+        }
     }
     const handleUpVote=async(already,post_id)=>{
         if(!already){

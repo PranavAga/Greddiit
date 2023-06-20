@@ -10,9 +10,15 @@ const router=express.Router();
 router.use(express.json());
 
 router.post('/create',
+body('title').not().isEmpty(),
+body('content').not().isEmpty(),
 verify,
 async(req,res)=>{
     try{
+        const errors=validationResult(req);
+        if (!errors.isEmpty()){
+            return res.status(400).send({errors:errors.array()});
+        }
         const {title,content,sg_id}=req.body
         const users_sg=await SG.findById(sg_id).select('followers')
         
