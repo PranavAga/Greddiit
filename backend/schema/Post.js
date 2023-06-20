@@ -10,7 +10,7 @@ const PostSchema=new Schema({
         ref: "Subgreddiit",
         required: true
     },
-    title :{
+    title :{ 
         type: String
     },
     content :{
@@ -29,7 +29,16 @@ const PostSchema=new Schema({
             ref: "User Details"
         }],
         default:[]
-    }
+    },
+    comments:
+       [{
+            user_id:{
+                type: Schema.Types.ObjectId,
+                ref: "User Details"
+            },
+            text:String
+        }]
+    
 })
 
 const Post=mongoose.model("Post",PostSchema);

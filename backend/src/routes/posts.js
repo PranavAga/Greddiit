@@ -1,5 +1,6 @@
-import express from'express';
+import express, { response } from'express';
 import verify from '../middleware/verify.js'
+import {body,validationResult} from 'express-validator';
 
 import Users from '../../schema/User.js'
 import SG from '../../schema/Sg.js';
@@ -188,5 +189,66 @@ async(req,res)=>{
         console.error(error);
         return res.status(500);
     }
-})
+});
+router.post('/addcomment',
+body('comment').not().isEmpty(),
+verify,
+async(req,res)=>{
+    try{
+        const errors=validationResult(req);
+        if (!errors.isEmpty()){
+            return res.status(400).send({errors:errors.array()});
+        }
+
+        const {comment,post_id}=req.body
+        const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
+        
+        //if SG doesnt exists
+        if(!users_sg){
+            return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
+        }
+        //if user hasn't joinned the SG
+        if(!users_sg.followers.includes(req.id)){
+            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+        }
+        const user_id=req.id
+        post.comments.push({user_id,text:comment})
+
+        await post.save()
+        return res.send()
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.get('/getallcomments/:id',
+verify,
+async(req,res)=>{
+    try{
+        const post_id=req.params.id
+        const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
+        
+        //if SG doesnt exists
+        if(!users_sg){
+            return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
+        }
+        //if user hasn't joinned the SG
+        if(!users_sg.followers.includes(req.id)){
+            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+        }
+        const comment_details=[]
+        for(let i=0;i<post.comments?.length;i++){
+            const usname=await Users.findById(post.comments[i].user_id,'uname')
+            const text=post.comments[i].text
+            comment_details.push({usname,text})
+        }
+        
+        return res.send(comment_details)
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
 export default router;

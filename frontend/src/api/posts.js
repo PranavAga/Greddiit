@@ -1,5 +1,4 @@
 import api from './api';
-import axios from 'axios';
 
 const Posts={
     async create(title,content,sg_id){
@@ -45,6 +44,22 @@ const Posts={
     async remdownVote(post_id,sg_id){
         try {
             const res= await api.post('/api/posts/remdownvote',{body:{post_id,sg_id}});
+            return res?.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
+    async addComment(comment,post_id){
+        try {
+            await api.post('/api/posts/addcomment',{body:{comment,post_id}});
+            return
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
+    async getAllComments(post_id){
+        try {
+            const res= await api.get('/api/posts/getallcomments/'+post_id);
             return res?.data;
         } catch (error) {
             throw error.response.data;

@@ -2,8 +2,11 @@ import { Fragment } from "react";
 import { ThemeProvider } from '@mui/material/styles';
 import SouthIcon from '@mui/icons-material/South';
 import NorthIcon from '@mui/icons-material/North';
+import CommentRoundedIcon from '@mui/icons-material/CommentBankRounded'
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import TextField from '@mui/material/TextField';
-import { Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem } from "@mui/material";
+import { Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Icon, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput } from "@mui/material";
+import Fade from '@mui/material/Fade';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
@@ -33,6 +36,9 @@ export default function JoinedSG(){
     const[openCreate,setOpenCreate]=useState(false);
     const[bannedW,setBannedW]=useState();
     const[posts,setPosts]=useState();
+    const[showComments,setShowComments]=useState([]);
+    const[addComment,setAddComment]=useState({})
+    const [comments,setComments]=useState({})
 
     async function theSG(){
         try {
@@ -62,6 +68,27 @@ export default function JoinedSG(){
         try {
             const res=await postsAPI.getAll(id);
             setPosts(res)
+            for(let i=0;i<res?.length;i++){
+                getComments(res[i]._id)
+            }
+        } catch (error) {
+            if (error.errors[0]){
+                return navigate('/');
+            }
+            else{
+             console.error(error);   
+            }
+        }
+    }
+    async function getComments(post_id){
+        try {
+            const res=await postsAPI.getAllComments(post_id);
+            console.log(res)
+            let updated_comments=comments;
+            updated_comments[post_id]=res;
+            setComments(comments => ({
+            ...updated_comments
+        }));
         } catch (error) {
             if (error.errors[0]){
                 return navigate('/');
@@ -157,6 +184,45 @@ export default function JoinedSG(){
         }
         getPosts();
     }
+    const handleShowComments=(post_id)=>{
+        if(showComments?.includes(post_id)){
+            setShowComments(showComments.filter(id=>id!==post_id))
+        }
+        else{
+            setShowComments(showComments=>showComments.concat(post_id));
+        }
+    }
+    const handleAddComment=(comment,post_id)=>{
+        let updated_addComment=addComment;
+        updated_addComment[post_id]=comment;
+        setAddComment(addComment => ({
+            ...updated_addComment
+        }));
+    }
+    const submitAddComment=async(post_id)=>{
+        if(addComment[post_id]?.trim()){
+            try {
+                await postsAPI.addComment(addComment[post_id],post_id);
+                getComments(post_id)
+                let updated_addComment=addComment;
+                updated_addComment[post_id]='';
+                setAddComment(addComment => ({
+                ...updated_addComment
+                }));
+            } catch (error) {
+                if (error.errors?.[0]){
+                    alert(error.errors?.[0].msg)
+                    return navigate('/');
+                }
+                else{
+                    console.error(error);   
+                }
+            }
+        }
+        else{
+            alert("Cannot add empty comment")
+        }
+    }
 
     useEffect(()=>{
         theSG();
@@ -169,11 +235,11 @@ export default function JoinedSG(){
                 <br></br><br></br><br></br>
                 <Box
                 sx={{
-                    p: 2,
-                    m:1,
                     display: 'flex',
-                    // justifyContent: 'flex-start',
-                    alignItems: 'center'
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    p: 2,
+                    m:2
                 }}
                 >
                     <Box
@@ -200,15 +266,18 @@ export default function JoinedSG(){
                     }
                         <h3>{sdetails?.[1]}</h3>
                     </Box>
+                    &nbsp;&nbsp;
                     <Box
                         sx={{
                             border: 2,
-                            borderColor: 'secondary.main',
+                            borderColor: '#14989f',
+                            backgroundColor: '#d7f8fa',
                             borderStyle:'dotted',
                             borderRadius: 3,
                             display: 'flex',
                             p:2,
                             border:2,
+                            flexGrow: 1,
                             // width:'100%',
                             flexDirection: 'column'
                         }}
@@ -231,11 +300,13 @@ export default function JoinedSG(){
                         </Dialog>
                         
                         {/* All posts */}
+                        <Box>
                         {
                             posts?.map((post)=>(
                                 <Box 
                                 sx={{
                                     p:1,
+                                    m:1,
                                     border: 1,
                                     borderColor: "primary.main",
                                     borderRadius: 2,
@@ -252,10 +323,60 @@ export default function JoinedSG(){
                                         color={post.down_votes?.includes(user_id)?'downVote':voteDefault}>
                                         <SouthIcon/>
                                     </IconButton>
-
+                                    &nbsp;&nbsp;
+                                    {post?.comments.length}
+                                    <IconButton onClick={()=>handleShowComments(post._id)}>
+                                        <CommentRoundedIcon/>
+                                    </IconButton>
+                                    {(showComments?.includes(post._id))&&
+                                    <Box sx={{ display: 'flex' }}>
+                                        <Fade in={showComments?.includes(post._id)}>{
+                                            <Box
+                                            sx={{
+                                                border:1,
+                                                borderColor: 'black',
+                                                backgroundColor: '#c2c2c2',
+                                                borderRadius: 2,
+                                                p:1                                            }}
+                                            >
+                                                {/* All comments */}
+                                                <Box>
+                                                    {
+                                                        // comments[post._id]
+                                                        comments[post._id]?.map((comment)=>(
+                                                            <Box
+                                                            sx={{
+                                                                borderRadius: 1,
+                                                                borderColor: '#e3c51c',
+                                                                border:1,
+                                                                m:1,
+                                                                p:1
+                                                            }}
+                                                            >
+                                                                <i>commented by {comment.usname.uname}</i>
+                                                                <p>{comment.text}</p>
+                                                            </Box>
+                                                        ))
+                                                    }
+                                                </Box>
+                                                
+                                                {/* Add comment */}
+                                                <OutlinedInput value={addComment?.[post._id]} onChange={(e)=>handleAddComment(e.target.value,post._id)} type="text" endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton onClick={()=>submitAddComment(post._id)}>
+                                                                <AddCircleIcon/>
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                >
+                                                </OutlinedInput>
+                                            </Box>
+                                        }</Fade>
+                                    </Box>}                                    
                                 </Box>
                             ))
                         }
+                        </Box>
                     </Box>
                 </Box>
             </CssBaseline>
