@@ -1,65 +1,42 @@
-import { Fragment } from "react";
+import {Theme} from './util/ColorTheme.js';
 import { ThemeProvider } from '@mui/material/styles';
+import {Box} from '@mui/system';
+import { CssBaseline } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import SouthIcon from '@mui/icons-material/South';
 import NorthIcon from '@mui/icons-material/North';
 import CommentRoundedIcon from '@mui/icons-material/CommentBankRounded'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
 import TextField from '@mui/material/TextField';
-import { Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Icon, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput } from "@mui/material";
+import {   Icon, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput } from "@mui/material";
 import Fade from '@mui/material/Fade';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-import {Buffer} from 'buffer';
-import axios from "axios";
 
-import mysgAPI from "../api/sg";
-import postsAPI from "../api/posts"
-import Top from './util/top';
-import {Theme} from './util/ColorTheme.js';
+import postsAPI from '../api/posts.js';
 
-export default function JoinedSG(){
-    const params=useParams();
-    const id=params.id;
+export default function Saved(){
     const theme=Theme;
     const navigate=useNavigate();
-    const token=localStorage.getItem('token');
-    if (token){
-        axios.defaults.headers.common['x-auth-token']=token;
-    }
-    const voteDefault='#7d7d7d'
 
-    const[sdetails,setSdetails]=useState();
+    const[savedPosts,setSavedPosts]=useState([])
+    const [comments,setComments]=useState({})
     const[user_id,setUser_id]=useState();
-    const[imageb,setImageb]=useState();
-    const[hasImage,setHasImage]=useState(false);
-    const[openCreate,setOpenCreate]=useState(false);
     const[bannedW,setBannedW]=useState();
-    const[posts,setPosts]=useState();
     const[showComments,setShowComments]=useState([]);
     const[addComment,setAddComment]=useState({})
-    const [comments,setComments]=useState({})
-    const[savedPosts,setSavedPosts]=useState([])
+    const voteDefault='#7d7d7d'
 
-    async function theSG(){
+    async function getComments(post_id){
         try {
-            const res=await mysgAPI.getSG_joined(id);
-            setSdetails([res.sg.name,res.sg.desc]);
-            setUser_id(res.user_id)
-            setBannedW(res.sg.banned)
-            //const STRING_CHAR = String.fromCharCode.apply(null, res.img.data.data);
-            // const base64String1 = btoa(STRING_CHAR);//DEPRECATED
-            const base64String1 = Buffer.from(res.img.data.data).toString('base64')
-            setImageb('data:image/gif; base64,'+base64String1)
-            if(base64String1){
-                setHasImage(true)
-            }
-            
+            const res=await postsAPI.getAllComments(post_id);
+            let updated_comments=comments;
+            updated_comments[post_id]=res;
+            setComments(comments => ({
+            ...updated_comments
+        }));
         } catch (error) {
             if (error.errors[0]){
-                console.log(error.errors[0])
                 return navigate('/');
             }
             else{
@@ -67,12 +44,13 @@ export default function JoinedSG(){
             }
         }
     }
-    async function getPosts(){
+    const getSavedPosts=async()=>{
         try {
-            const res=await postsAPI.getAll(id);
-            setPosts(res)
-            for(let i=0;i<res?.length;i++){
-                getComments(res[i]._id)
+            const res=await postsAPI.getUserSavedPosts();
+            setSavedPosts(res.posts)
+            setUser_id(res.user_id)
+            for(let i=0;i<res?.posts?.length;i++){
+                getComments(res.posts[i]._id)
             }
         } catch (error) {
             if (error.errors[0]){
@@ -99,70 +77,6 @@ export default function JoinedSG(){
              console.error(error);   
             }
         }
-    }
-    async function getSaved(){
-        try {
-            const res=await postsAPI.getSavedPosts(id);
-            setSavedPosts(res);
-        } catch (error) {
-            if (error.errors[0]){
-                return navigate('/');
-            }
-            else{
-             console.error(error);   
-            }
-        }
-    }
-    const handleSubmitPost= async()=>{
-        const title=document.getElementById("ntitle").value;
-        const content=document.getElementById("ncontent").value;
-        if(title?.trim()&&content?.trim()){
-            if(hasBanned(title)||hasBanned(content)){
-                if(window.confirm("The post contains banned words.")){
-                    try {
-                        await postsAPI.create(title,content,id);
-                        setOpenCreate(false);
-                        getPosts();
-                    } catch (error) {
-                        if (error.errors?.[0]){
-                            return navigate('/');
-                        }
-                        else{
-                         console.error(error);   
-                        }
-                    }
-                }
-                else{
-                }
-            }
-            else{
-                try {
-                    await postsAPI.create(title,content,id);
-                    setOpenCreate(false);
-                    getPosts();
-                    
-                } catch (error) {
-                    if (error.errors?.[0]){
-                        return navigate('/');
-                    }
-                    else{
-                     console.error(error);   
-                    }
-                }
-            }
-            
-        }
-        else{
-            alert("Title and content cannot be empty.")
-        }
-    }
-    function hasBanned(text){
-        for(let i=0;i<bannedW?.length;i++){
-            if(text.search(RegExp(bannedW[i],"i"))>-1){
-                return true
-            }
-        }
-        return false
     }
     const handleUpVote=async(already,post_id)=>{
         if(!already){
@@ -196,7 +110,7 @@ export default function JoinedSG(){
                 }
             }
         }
-        getPosts()
+        getSavedPosts()
     }
     const handleDownVote=async(already,post_id)=>{
         if(!already){
@@ -230,7 +144,7 @@ export default function JoinedSG(){
                 }
             }
         }
-        getPosts();
+        getSavedPosts();
     }
     const handleShowComments=(post_id)=>{
         if(showComments?.includes(post_id)){
@@ -246,42 +160,6 @@ export default function JoinedSG(){
         setAddComment(addComment => ({
             ...updated_addComment
         }));
-    }
-    const handleSavePost= async(post_id)=>{
-        if(!savedPosts?.includes(post_id)){
-            try {
-                const res=await postsAPI.savePost(post_id);
-                setSavedPosts(res)
-                // getSaved()
-            } catch (error) {
-                if (error.errors?.[0]){
-                    if(error.errors?.[0].msg!=="Already saved"){
-                        return navigate('/');
-                    }
-                    alert(error.errors?.[0].msg)
-                }
-                else{
-                console.error(error);   
-                }
-            }
-        }
-        else{
-            try {
-                const res=await postsAPI.unsavePost(post_id);
-                setSavedPosts(res)
-                // getSaved()
-            } catch (error) {
-                if (error.errors?.[0]){
-                    if(error.errors?.[0].msg!=="Not saved"){
-                        return navigate('/');
-                    }
-                    alert(error.errors?.[0].msg)
-                }
-                else{
-                console.error(error);   
-                }
-            }
-        }
     }
     const submitAddComment=async(post_id)=>{
         if(addComment[post_id]?.trim()){
@@ -307,94 +185,50 @@ export default function JoinedSG(){
             alert("Cannot add empty comment")
         }
     }
-    function filteredPost(text){
-        let ftext=text;
-        for(let i=0;i<bannedW?.length;i++){
-            ftext=ftext.replaceAll(RegExp(bannedW[i],"gi"),'*'.repeat(bannedW[i].length))
+    const handleUnsave=async(post_id)=>{
+        try {
+            const res=await postsAPI.unsavePost(post_id);
+            setSavedPosts(res)
+        } catch (error) {
+            if (error.errors?.[0]){
+                if(error.errors?.[0].msg!=="Not saved"){
+                    return navigate('/');
+                }
+                alert(error.errors?.[0].msg)
+            }
+            else{
+            console.error(error);   
+            }
         }
-        return ftext;
+        getSavedPosts();
     }
 
     useEffect(()=>{
-        theSG();
-        getPosts();
-        getSaved();
-    },[]);
+        getSavedPosts()
+    },[])
     return(
-        <Fragment>
-            <Top/>
-            <ThemeProvider theme={theme}><CssBaseline>
-                <br></br><br></br><br></br>
-                <Box
+        <main>
+            <ThemeProvider theme={theme}>
+            <CssBaseline>
+                <Box 
                 sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    p: 2,
-                    m:2
+                    border: 2,
+                    borderColor: 'secondary.main',
+                    borderStyle:'dotted',
+                    borderRadius: 3,
+                    display:'flex',
+                    flexDirection: 'column',
+                    alignItems:"center",
+                    justifyContent:"center"
                 }}
                 >
-                    <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column' ,
-                        alignItems: 'center'
-                    }}
-                    >
-                        <h1>{sdetails?.[0]}</h1>
-                    {
-                        (!hasImage)?
-                        <img src="/default_sg.jpg"  alt="default" 
-                        style={{
-                            maxWidth: '300px',
-                            height: 'auto'
-                        }} ></img>
-                        :
-                        <img src={imageb} alt={imageb}
-                        style={{
-                            maxWidth: '300px',
-                            height: 'auto'
-                        }} ></img>
-                    }
-                        <h3>{sdetails?.[1]}</h3>
-                    </Box>
-                    &nbsp;&nbsp;
-                    <Box
-                        sx={{
-                            border: 2,
-                            borderColor: '#14989f',
-                            backgroundColor: '#d7f8fa',
-                            borderStyle:'dotted',
-                            borderRadius: 3,
-                            display: 'flex',
-                            p:2,
-                            border:2,
-                            flexGrow: 1,
-                            // width:'100%',
-                            flexDirection: 'column'
-                        }}
-                    >
-                        <Button onClick={()=>setOpenCreate(true)}
-                        >Create Post !</Button>
-                        <Dialog open={openCreate} onClose={()=>setOpenCreate(false)}>
-                            <DialogTitle>Create</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText>
-                                    Add a post to the Subgreddiit. Use appropriate language.
-                                </DialogContentText>
-                                <TextField autoComplete='off' id="ntitle" label="Title" variant="standard" /><br></br>
-                                <TextField autoComplete='off' id="ncontent" label="Content" variant="standard" />
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={()=>setOpenCreate(false)}>Cancel</Button>
-                                <Button onClick={handleSubmitPost}>Submit</Button>
-                            </DialogActions>
-                        </Dialog>
-                        
-                        {/* All posts */}
-                        <Box>
+                    <h2>Saved Posts</h2>
+                    <i>from joined subgreddiits</i>
+                    
+                    {/* All Posts*/}
+                    <Box>
                         {
-                            posts?.map((post)=>(
+                            savedPosts?.map((post)=>(
                                 <Box 
                                 sx={{
                                     p:1,
@@ -405,23 +239,23 @@ export default function JoinedSG(){
                                     backgroundColor: "white"
                                 }}>
                                     <Box sx={{ display: 'flex',justifyContent: 'space-between'}}>
-                                    <h3>{filteredPost(post.title)}</h3>
-                                    <IconButton onClick={()=>handleSavePost(post._id)} color="primary">
-                                        {savedPosts?.includes(post._id)?<BookmarkIcon/>:<TurnedInNotIcon/>}
+                                    <h3>{post.title}</h3>
+                                    <IconButton onClick={()=>handleUnsave(post._id)} color="primary">
+                                        <BookmarkIcon>unsave</BookmarkIcon>
                                     </IconButton>
                                     </Box>
-                                    <p>{filteredPost(post.content)}</p>
+                                    <p>{post.content}</p>
                                     <IconButton onClick={()=>handleUpVote(post.up_votes.includes(user_id),post._id)} 
                                         color={post.up_votes?.includes(user_id)?'upVote':voteDefault}>
                                         <NorthIcon/>
                                     </IconButton>
-                                    {post.up_votes.length-post.down_votes.length}
+                                    {post.up_votes?.length-post.down_votes?.length}
                                     <IconButton onClick={()=>handleDownVote(post.down_votes.includes(user_id),post._id)} 
                                         color={post.down_votes?.includes(user_id)?'downVote':voteDefault}>
                                         <SouthIcon/>
                                     </IconButton>
                                     &nbsp;&nbsp;
-                                    {post?.comments.length}
+                                    {post?.comments?.length}
                                     <IconButton onClick={()=>handleShowComments(post._id)}>
                                         <CommentRoundedIcon/>
                                     </IconButton>
@@ -434,7 +268,8 @@ export default function JoinedSG(){
                                                 borderColor: 'black',
                                                 backgroundColor: '#c2c2c2',
                                                 borderRadius: 2,
-                                                p:1                                            }}
+                                                p:1                                            
+                                            }}
                                             >
                                                 {/* All comments */}
                                                 <Box>
@@ -474,11 +309,9 @@ export default function JoinedSG(){
                             ))
                         }
                         </Box>
-                    </Box>
                 </Box>
             </CssBaseline>
             </ThemeProvider>
-            
-        </Fragment>
+        </main>
     )
 }

@@ -5,6 +5,7 @@ import SG from '../../schema/Sg.js';
 import verify from '../middleware/verify.js'
 
 import {body,param,validationResult} from 'express-validator';
+import Post from '../../schema/Post.js';
 
 const router=express.Router();
 const upload = multer({ storage: multer.memoryStorage() })
@@ -302,6 +303,19 @@ router.post('/sgs/leave',verify,async(req,res)=>{
             sg.followers.splice(index, 1);
         }
         await sg.save()
+
+        //removing saved posts from this sg
+        const user=await Users.findById(req.id)
+        for(let i=0;i<user?.saved_posts?.length;i++){
+            const post=await Post.findById(user.saved_posts[i],'sg');
+            if(post.sg===sg_id){
+                const index = user.saved_posts[i].indexOf(req.id);
+                if (index > -1) {
+                    user.saved_posts[i].splice(index, 1);
+                }
+            }
+        }
+        user.save()
         return res.send()
     } catch (error) {
         console.error(error);

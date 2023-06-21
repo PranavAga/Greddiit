@@ -26,9 +26,9 @@ async(req,res)=>{
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         const post=new Post({
             creator: req.id,
@@ -50,16 +50,17 @@ router.post('/upvote',
 verify,
 async(req,res)=>{
     try{
-        const {post_id,sg_id}=req.body
-        const users_sg=await SG.findById(sg_id).select('followers')
+        const {post_id}=req.body
         const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
+        
         //if SG doesnt exists
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         if(post.up_votes.includes(req.id)){
             return res.status(400).send({errors: [{msg: "Already upvoted"}]})
@@ -84,16 +85,16 @@ router.post('/remupvote',
 verify,
 async(req,res)=>{
     try{
-        const {post_id,sg_id}=req.body
-        const users_sg=await SG.findById(sg_id).select('followers')
+        const {post_id}=req.body
         const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
         //if SG doesnt exists
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         if(!post.up_votes.includes(req.id)){
             return res.status(400).send({errors: [{msg: "not upvoted"}]})
@@ -114,16 +115,16 @@ router.post('/downvote',
 verify,
 async(req,res)=>{
     try{
-        const {post_id,sg_id}=req.body
-        const users_sg=await SG.findById(sg_id).select('followers')
+        const {post_id}=req.body
         const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
         //if SG doesnt exists
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         if(post.down_votes.includes(req.id)){
             return res.status(400).send({errors: [{msg: "Already downvoted"}]})
@@ -147,16 +148,16 @@ router.post('/remdownvote',
 verify,
 async(req,res)=>{
     try{
-        const {post_id,sg_id}=req.body
-        const users_sg=await SG.findById(sg_id).select('followers')
+        const {post_id}=req.body
         const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
         //if SG doesnt exists
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         if(!post.down_votes.includes(req.id)){
             return res.status(400).send({errors: [{msg: "not downvoted"}]})
@@ -184,9 +185,9 @@ async(req,res)=>{
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         
         const posts=await Post.find({sg: sg_id})
@@ -214,9 +215,9 @@ async(req,res)=>{
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         const user_id=req.id
         post.comments.push({user_id,text:comment})
@@ -240,9 +241,9 @@ async(req,res)=>{
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joinned the SG
+        //if user hasn't joined the SG
         if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joinned the SG"}]})
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         const comment_details=[]
         for(let i=0;i<post.comments?.length;i++){
@@ -257,4 +258,118 @@ async(req,res)=>{
         return res.status(500);
     }
 });
+router.post('/savepost',
+verify,
+async(req,res)=>{
+    try{
+        const {post_id}=req.body
+        const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
+        const user_id=req.id
+        const user=await Users.findById(user_id)
+        
+        //if SG doesnt exists
+        if(!users_sg){
+            return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
+        }
+        //if user hasn't joined the SG
+        if(!users_sg.followers.includes(req.id)){
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
+        }
+        //already saved
+        if(user.saved_posts.includes(post_id)){
+            return res.status(400).send({errors: [{msg: "Already saved"}]})
+        }
+
+        user.saved_posts.push(post_id)
+
+        await user.save()
+        return res.send(user.saved_posts)
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.post('/unsavepost',
+verify,
+async(req,res)=>{
+    try{
+        const {post_id}=req.body
+        const post=await Post.findById(post_id)
+        const users_sg=await SG.findById(post.sg).select('followers')
+        const user_id=req.id
+        const user=await Users.findById(user_id)
+        
+        //if SG doesnt exists
+        if(!users_sg){
+            return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
+        }
+        //if user hasn't joined the SG
+        if(!users_sg.followers.includes(req.id)){
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
+        }
+        //already saved
+        if(!user.saved_posts.includes(post_id)){
+            return res.status(400).send({errors: [{msg: "Not saved"}]})
+        }
+
+        const index = user.saved_posts.indexOf(post_id);
+        if (index > -1) {
+            user.saved_posts.splice(index, 1);
+        }
+
+        await user.save()
+        return res.send(user.saved_posts)
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.get('/getsavedposts/:id',
+verify,
+async(req,res)=>{
+    try{
+        const sg_id=req.params.id
+        const users_sg=await SG.findById(sg_id).select('followers')
+        const user_id=req.id
+        const user=await Users.findById(user_id)
+        
+        //if SG doesnt exists
+        if(!users_sg){
+            return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
+        }
+        //if user hasn't joined the SG
+        if(!users_sg.followers.includes(req.id)){
+            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
+        }
+        
+        return res.send(user.saved_posts)
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.get('/getusersavedposts',
+verify,
+async(req,res)=>{
+    try{
+        const user_id=req.id
+        const user=await Users.findById(user_id)
+        const posts=[]
+        
+        for(let i=0;i<user.saved_posts.length;i++){
+            const post=await Post.findById(user.saved_posts[i])
+            const sg=await SG.findById(post.sg)
+            if(sg.followers.includes(user_id)){
+                posts.push(post)
+            }
+        }
+
+        return res.send({user_id,posts})
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+
 export default router;

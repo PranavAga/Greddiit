@@ -17,33 +17,33 @@ const Posts={
             throw error.response.data;
         }
     },
-    async upVote(post_id,sg_id){
+    async upVote(post_id){
         try {
-            const res= await api.post('/api/posts/upvote',{body:{post_id,sg_id}});
+            const res= await api.post('/api/posts/upvote',{body:{post_id}});
             return res?.data;
         } catch (error) {
             throw error.response.data;
         }
     },
-    async remupVote(post_id,sg_id){
+    async remupVote(post_id){
         try {
-            const res= await api.post('/api/posts/remupvote',{body:{post_id,sg_id}});
+            const res= await api.post('/api/posts/remupvote',{body:{post_id}});
             return res?.data;
         } catch (error) {
             throw error.response.data;
         }
     },
-    async downVote(post_id,sg_id){
+    async downVote(post_id){
         try {
-            const res= await api.post('/api/posts/downvote',{body:{post_id,sg_id}});
+            const res= await api.post('/api/posts/downvote',{body:{post_id}});
             return res?.data;
         } catch (error) {
             throw error.response.data;
         }
     },
-    async remdownVote(post_id,sg_id){
+    async remdownVote(post_id){
         try {
-            const res= await api.post('/api/posts/remdownvote',{body:{post_id,sg_id}});
+            const res= await api.post('/api/posts/remdownvote',{body:{post_id}});
             return res?.data;
         } catch (error) {
             throw error.response.data;
@@ -64,7 +64,39 @@ const Posts={
         } catch (error) {
             throw error.response.data;
         }
-    }
+    },
+    async savePost(post_id){
+        try {
+            const res=await api.post('/api/posts/savepost',{body:{post_id}});
+            return res?.data
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
+    async unsavePost(post_id){
+        try {
+            const res=await api.post('/api/posts/unsavepost',{body:{post_id}});
+            return res?.data
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
+    async getSavedPosts(sg_id){
+        try {
+            const res= await api.get('/api/posts/getsavedposts/'+sg_id);
+            return res?.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
+    async getUserSavedPosts(){
+        try {
+            const res= await api.get('/api/posts/getusersavedposts');
+            return res?.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    },
 }
 
 export default Posts;

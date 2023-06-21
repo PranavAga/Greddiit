@@ -24,6 +24,13 @@ const UserSchema =new mongoose.Schema({
     age: Number, 
     contact: {
         type:String
+    },
+    saved_posts:{
+        type:[{
+            type: Schema.Types.ObjectId,
+            ref: "Post"
+        }],
+        default:[]
     }
 });
 

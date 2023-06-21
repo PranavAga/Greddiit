@@ -18,6 +18,7 @@ import MyProfile from './MyProfile.js';
 import MySG from './MySG.js';
 import SG from './listSG.js'
 import Top from './util/top';
+import Saved from './SavedPosts.js';
 
 export default function Home(){
     const theme=Theme;
@@ -35,7 +36,6 @@ export default function Home(){
 
     return(
         <main>
-            
             <Top/>
             <Box>
             <h1>HOME</h1>
@@ -53,24 +53,27 @@ export default function Home(){
                     mx: 'auto'
                 }}>           
                     <Tabs centered textColor='primary' value={tab} onChange={handleTChange} aria-label="Sign-up/Log-in">
-                <Tab icon={<AllInboxIcon/>} label="Subgreddiits" value ="sg"></Tab>
-                    <Tab icon={<BackupTableIcon/>}label="My Subgreddiits" value="msg"></Tab>
-                    <Tab icon={<AccountCircleIcon/>} label="My Profile" value="mp"></Tab>
-                    <Tab icon={<BookIcon/>}label="Saved" value="saved"></Tab>
+                        <Tab icon={<AllInboxIcon/>} label="Subgreddiits" value ="sg"></Tab>
+                        <Tab icon={<BackupTableIcon/>}label="My Subgreddiits" value="msg"></Tab>
+                        <Tab icon={<AccountCircleIcon/>} label="My Profile" value="mp"></Tab>
+                        <Tab icon={<BookIcon/>}label="Saved" value="saved"></Tab>
                     </Tabs>             
                 </Box>
                 {/* Panels */}
-                <TabPanel value="sg">
-                    <SG/>
-                </TabPanel>
-                <TabPanel value='mp'>   
-                    <MyProfile/>
-                </TabPanel>
-                <TabPanel value='msg'>
-                    <MySG/>
-                </TabPanel>
-            </TabContext>
-            </Box>
+                    <TabPanel value="sg">
+                        <SG/>
+                    </TabPanel>
+                    <TabPanel value='mp'>   
+                        <MyProfile/>
+                    </TabPanel>
+                    <TabPanel value='msg'>
+                        <MySG/>
+                    </TabPanel>
+                    <TabPanel value='saved'>
+                        <Saved/>
+                    </TabPanel>
+                </TabContext>
+                </Box>
             <br></br>
             </ThemeProvider>
             </Box>
