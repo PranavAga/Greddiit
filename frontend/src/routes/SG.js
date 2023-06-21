@@ -227,6 +227,13 @@ export default function JoinedSG(){
             alert("Cannot add empty comment")
         }
     }
+    function filteredPost(text){
+        let ftext=text;
+        for(let i=0;i<bannedW?.length;i++){
+            ftext=ftext.replaceAll(RegExp(bannedW[i],"gi"),'*'.repeat(bannedW[i].length))
+        }
+        return ftext;
+    }
 
     useEffect(()=>{
         theSG();
@@ -294,8 +301,8 @@ export default function JoinedSG(){
                                 <DialogContentText>
                                     Add a post to the Subgreddiit. Use appropriate language.
                                 </DialogContentText>
-                                <TextField id="ntitle" label="Title" variant="standard" /><br></br>
-                                <TextField id="ncontent" label="Content" variant="standard" />
+                                <TextField autoComplete='off' id="ntitle" label="Title" variant="standard" /><br></br>
+                                <TextField autoComplete='off' id="ncontent" label="Content" variant="standard" />
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={()=>setOpenCreate(false)}>Cancel</Button>
@@ -317,7 +324,7 @@ export default function JoinedSG(){
                                     backgroundColor: "white"
                                 }}>
                                     <h3>{post.title}</h3>
-                                    <p>{post.content}</p>
+                                    <p>{filteredPost(post.content)}</p>
                                     <IconButton onClick={()=>handleUpVote(post.up_votes.includes(user_id),post._id)} 
                                         color={post.up_votes?.includes(user_id)?'upVote':voteDefault}>
                                         <NorthIcon/>
