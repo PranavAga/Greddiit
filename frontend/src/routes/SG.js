@@ -102,23 +102,52 @@ export default function JoinedSG(){
         const title=document.getElementById("ntitle").value;
         const content=document.getElementById("ncontent").value;
         if(title?.trim()&&content?.trim()){
-            try {
-                const res=await postsAPI.create(title,content,id);
-                setOpenCreate(false);
-                getPosts();
-                
-            } catch (error) {
-                if (error.errors?.[0]){
-                    return navigate('/');
+            if(hasBanned(title)||hasBanned(content)){
+                if(window.confirm("The post contains banned words.")){
+                    try {
+                        await postsAPI.create(title,content,id);
+                        setOpenCreate(false);
+                        getPosts();
+                    } catch (error) {
+                        if (error.errors?.[0]){
+                            return navigate('/');
+                        }
+                        else{
+                         console.error(error);   
+                        }
+                    }
                 }
                 else{
-                 console.error(error);   
                 }
             }
+            else{
+                try {
+                    await postsAPI.create(title,content,id);
+                    setOpenCreate(false);
+                    getPosts();
+                    
+                } catch (error) {
+                    if (error.errors?.[0]){
+                        return navigate('/');
+                    }
+                    else{
+                     console.error(error);   
+                    }
+                }
+            }
+            
         }
         else{
             alert("Title and content cannot be empty.")
         }
+    }
+    function hasBanned(text){
+        for(let i=0;i<bannedW?.length;i++){
+            if(text.search(RegExp(bannedW[i],"i"))>-1){
+                return true
+            }
+        }
+        return false
     }
     const handleUpVote=async(already,post_id)=>{
         if(!already){
@@ -323,7 +352,7 @@ export default function JoinedSG(){
                                     borderRadius: 2,
                                     backgroundColor: "white"
                                 }}>
-                                    <h3>{post.title}</h3>
+                                    <h3>{filteredPost(post.title)}</h3>
                                     <p>{filteredPost(post.content)}</p>
                                     <IconButton onClick={()=>handleUpVote(post.up_votes.includes(user_id),post._id)} 
                                         color={post.up_votes?.includes(user_id)?'upVote':voteDefault}>
