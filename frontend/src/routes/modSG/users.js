@@ -16,11 +16,13 @@ export default function Users(){
     const navigate=useNavigate();
     
     const [users,setUsers]=useState();
+    const[blocked,setBlocked]=useState([]);
 
     async function loadUsers(){
         try {
             const res=await mysgAPI.getUsers(id);
             setUsers(res.users);
+            setBlocked(res.blocked)
         } catch (error) {
             if (error.errors[0]){
                 return navigate('/');
@@ -43,6 +45,14 @@ export default function Users(){
                     <h3>Current users:</h3>
                 {
                     users?.map((elem)=>
+                        <li>{elem.uname}</li>
+                    )
+                }
+                </ul>
+                <ul>
+                    <h3>Blocked users:</h3>
+                {
+                    blocked?.map((elem)=>
                         <li>{elem.uname}</li>
                     )
                 }

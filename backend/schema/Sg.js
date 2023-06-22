@@ -24,6 +24,14 @@ const SGSchema=new mongoose.Schema({
         default:[],
         validate: [isNotempty, '{PATH} is empty array']
     },
+    blocked_users:{
+        type:[{
+            type: Schema.Types.ObjectId,
+            ref: "User Details"
+        }],
+        default:[],
+        validate: [isNotempty, '{PATH} is empty array']
+    },
     req_users:{
         type:[{
             type: Schema.Types.ObjectId,

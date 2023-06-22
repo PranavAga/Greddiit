@@ -142,11 +142,17 @@ router.post('/mod/users',verify,async(req,res)=>{
             return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
         };
         const users=Array()
+        const blocked=Array()
         for(let i=0; i<sg.followers.length;i++){
             const user=await Users.findById(sg.followers[i]).select('uname');
             users.push(user);
         }
-        return res.send({users});
+        for(let i=0; i<sg.blocked_users.length;i++){
+            const user=await Users.findById(sg.blocked_users[i]).select('uname');
+            blocked.push(user);
+        }
+
+        return res.send({users,blocked});
     } catch (error) {
         console.error(error);
         return res.status(500);
