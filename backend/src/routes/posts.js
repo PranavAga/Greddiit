@@ -5,6 +5,7 @@ import {body,validationResult} from 'express-validator';
 import Users from '../../schema/User.js'
 import SG from '../../schema/Sg.js';
 import Post from '../../schema/Post.js';
+import Followspair from '../../schema/UserFF.js';
 
 const router=express.Router();
 router.use(express.json());
@@ -190,7 +191,7 @@ async(req,res)=>{
             return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
         }
         
-        const posts=await Post.find({sg: sg_id})
+        const posts=await Post.find({sg: sg_id}).populate('creator','uname')
         return res.send(posts)
     } catch (error) {
         console.error(error);
@@ -371,5 +372,34 @@ async(req,res)=>{
         return res.status(500);
     }
 });
+router.post('/follow-creator',
+verify,
+async(req,res)=>{
+    try{
+        const {creator_id}=req.body
+        const user_id=req.id
+        
+        const flsp=await Followspair.find({curr_user:user_id,follows:creator_id}).exec()
+        //cant follow yourself
+        if(creator_id===req.id){
+            return res.status(400).send({errors: [{msg: "Cant follow yourself"}]})
+        }
+        //already following
+        if(flsp?.length!==0){
+            return res.status(400).send({errors: [{msg: "Already follow the creator"}]})
+        }
+ 
+        const new_flsp= new Followspair({
+            curr_user:req.id,
+            follows:creator_id
+        })
+        await new_flsp.save()
 
+        const following=await Followspair.find({curr_user:req.id}).select('follows');
+        return res.send(following)
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
 export default router;

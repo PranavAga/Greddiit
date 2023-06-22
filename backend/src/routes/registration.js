@@ -1,6 +1,5 @@
 import express from'express';
 import Users from '../../schema/User.js'
-import Followspair from '../../schema/UserFF.js';
 import bcrypt from 'bcryptjs';
 import {body,oneOf,validationResult} from 'express-validator';
 
@@ -37,25 +36,7 @@ async(req,res)=>{
         nuser.password=await bcrypt.hash(nuser.password,salt);
         await nuser.save();
         
-        //folloing and getting followed by every user that exits
-        const curr_id=nuser._id;
-        const all=await Users.find().select('_id');
-        for(let i=0;i<all.length;i++){
-            if(all[i]._id!=curr_id){
-                const other=all[i]._id
-                const fpair=new Followspair({
-                    curr_user:curr_id,
-                    follows:other
-                });
-                await fpair.save()
-
-                const ffpair=new Followspair({
-                    curr_user:other,
-                    follows:curr_id
-                })
-                await ffpair.save()
-            }
-        }
+        
         return res.send({token});
     }   
     catch(e){ 

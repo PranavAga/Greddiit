@@ -97,6 +97,14 @@ const Posts={
             throw error.response.data;
         }
     },
+    async followCreator(creator_id){
+        try {
+            const res=await api.post('/api/posts/follow-creator',{body:{creator_id}});
+            return res?.data
+        } catch (error) {
+            throw error.response.data;
+        }
+    }
 }
 
 export default Posts;

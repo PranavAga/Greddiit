@@ -19,6 +19,7 @@ import mysgAPI from "../api/sg";
 import postsAPI from "../api/posts"
 import Top from './util/top';
 import {Theme} from './util/ColorTheme.js';
+import getProfile from "../api/getproflie";
 
 export default function JoinedSG(){
     const params=useParams();
@@ -42,6 +43,7 @@ export default function JoinedSG(){
     const[addComment,setAddComment]=useState({})
     const [comments,setComments]=useState({})
     const[savedPosts,setSavedPosts]=useState([])
+    const[following,setFollowing]=useState([]);
 
     async function theSG(){
         try {
@@ -113,6 +115,20 @@ export default function JoinedSG(){
             }
         }
     }
+    async function getFollowing(){
+        try {
+            const res=await getProfile.getFollowing();
+            setFollowing(res.map(({ id }) => id.follows)
+            );
+        } catch (error) {
+            if (error.errors[0]){
+                return navigate('/');
+            }
+            else{
+             console.error(error);   
+            }
+        }
+    }
     const handleSubmitPost= async()=>{
         const title=document.getElementById("ntitle").value;
         const content=document.getElementById("ncontent").value;
@@ -157,6 +173,9 @@ export default function JoinedSG(){
         }
     }
     function hasBanned(text){
+        if(bannedW?.length===0){
+            return false
+        }
         for(let i=0;i<bannedW?.length;i++){
             if(text.search(RegExp(bannedW[i],"i"))>-1){
                 return true
@@ -283,6 +302,19 @@ export default function JoinedSG(){
             }
         }
     }
+    const handleFollowCreator=async(creator_id)=>{
+        try {
+            const res=await postsAPI.followCreator(creator_id);
+            setFollowing(res.map(({follows})=>follows))
+        } catch (error) {
+            if (error.errors?.[0]){
+                alert(error.errors?.[0].msg)
+            }
+            else{
+            console.error(error);   
+            }
+        } 
+    }
     const submitAddComment=async(post_id)=>{
         if(addComment[post_id]?.trim()){
             try {
@@ -319,6 +351,7 @@ export default function JoinedSG(){
         theSG();
         getPosts();
         getSaved();
+        getFollowing();
     },[]);
     return(
         <Fragment>
@@ -410,6 +443,8 @@ export default function JoinedSG(){
                                         {savedPosts?.includes(post._id)?<BookmarkIcon/>:<TurnedInNotIcon/>}
                                     </IconButton>
                                     </Box>
+                                    <i>by {post.creator.uname}</i>&nbsp; 
+                                    <button onClick={()=>handleFollowCreator(post.creator._id)} disabled={(following?.includes(post.creator._id))||post.creator._id===user_id}>Follow {post.creator.uname}</button>
                                     <p>{filteredPost(post.content)}</p>
                                     <IconButton onClick={()=>handleUpVote(post.up_votes.includes(user_id),post._id)} 
                                         color={post.up_votes?.includes(user_id)?'upVote':voteDefault}>
@@ -451,7 +486,7 @@ export default function JoinedSG(){
                                                             }}
                                                             >
                                                                 <i>commented by {comment.usname.uname}</i>
-                                                                <p>{comment.text}</p>
+                                                                <p>{filteredPost(comment.text)}</p>
                                                             </Box>
                                                         ))
                                                     }
