@@ -359,7 +359,8 @@ async(req,res)=>{
         const posts=[]
         
         for(let i=0;i<user.saved_posts.length;i++){
-            const post=await Post.findById(user.saved_posts[i])
+            const post=await Post.findById(user.saved_posts[i]).populate('creator','uname').populate('sg','banned')
+
             const sg=await SG.findById(post.sg)
             if(sg.followers.includes(user_id)){
                 posts.push(post)

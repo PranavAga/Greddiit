@@ -22,11 +22,20 @@ export default function Saved(){
     const[savedPosts,setSavedPosts]=useState([])
     const [comments,setComments]=useState({})
     const[user_id,setUser_id]=useState();
-    const[bannedW,setBannedW]=useState();
     const[showComments,setShowComments]=useState([]);
     const[addComment,setAddComment]=useState({})
     const voteDefault='#7d7d7d'
 
+    function censorPost(bannedW,text){
+        let ftext=text;
+        if(bannedW?.length===0){
+            return ftext;
+        }
+        for(let i=0;i<bannedW?.length && ftext;i++){
+            ftext=ftext.replaceAll(RegExp(bannedW[i],"gi"),'*'.repeat(bannedW[i].length))
+        }
+        return ftext;
+    }
     async function getComments(post_id){
         try {
             const res=await postsAPI.getAllComments(post_id);
@@ -239,12 +248,13 @@ export default function Saved(){
                                     backgroundColor: "white"
                                 }}>
                                     <Box sx={{ display: 'flex',justifyContent: 'space-between'}}>
-                                    <h3>{post.title}</h3>
+                                    <h3>{censorPost(post.sg.banned,post.title)}</h3>
                                     <IconButton onClick={()=>handleUnsave(post._id)} color="primary">
                                         <BookmarkIcon>unsave</BookmarkIcon>
                                     </IconButton>
                                     </Box>
-                                    <p>{post.content}</p>
+                                    <i>by {post.creator.uname}</i>&nbsp; 
+                                    <p>{censorPost(post.sg.banned,post.content)}</p>
                                     <IconButton onClick={()=>handleUpVote(post.up_votes.includes(user_id),post._id)} 
                                         color={post.up_votes?.includes(user_id)?'upVote':voteDefault}>
                                         <NorthIcon/>
@@ -286,7 +296,7 @@ export default function Saved(){
                                                             }}
                                                             >
                                                                 <i>commented by {comment.usname.uname}</i>
-                                                                <p>{comment.text}</p>
+                                                                <p>{censorPost(post.sg.banned,comment.text)}</p>
                                                             </Box>
                                                         ))
                                                     }

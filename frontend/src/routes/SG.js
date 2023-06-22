@@ -341,7 +341,10 @@ export default function JoinedSG(){
     }
     function filteredPost(text){
         let ftext=text;
-        for(let i=0;i<bannedW?.length;i++){
+        if(bannedW?.length===0){
+            return ftext;
+        }
+        for(let i=0;i<bannedW?.length && ftext;i++){
             ftext=ftext.replaceAll(RegExp(bannedW[i],"gi"),'*'.repeat(bannedW[i].length))
         }
         return ftext;
