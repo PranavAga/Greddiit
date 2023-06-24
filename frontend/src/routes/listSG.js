@@ -113,8 +113,18 @@ export default function Subgreddiits(){
             }
         }
     }
-    const gotoSG=(id)=>{
-        navigate('/joinedSG/'+id)
+    const gotoSG=async(id)=>{
+        try {
+            await mysgAPI.visitedSG(id);
+            navigate('/joinedSG/'+id)
+        } catch (error) {
+            if (error.errors[0]){
+                alert(error.errors[0].msg);
+            }
+            else{
+             console.error(error);   
+            }
+        }
     }
     const handleFilter = (event, newFormats) => {
         setFilterT(newFormats);

@@ -30,7 +30,6 @@ const SGSchema=new mongoose.Schema({
             ref: "User Details"
         }],
         default:[],
-        validate: [isNotempty, '{PATH} is empty array']
     },
     req_users:{
         type:[{
@@ -80,7 +79,33 @@ const SGSchema=new mongoose.Schema({
         // default: []
     },
     img: 
-      { data: Buffer, contentType: String }
+      { data: Buffer, contentType: String },
+    user_growth:{
+            type:[{
+            count:{
+                type:Number
+            },
+            time:{
+                type:String
+            }
+        }]
+    },
+    post_growth:[{
+        count:{
+            type:Number
+        },
+        time:{
+            type:String
+        }
+    }],
+    visits:[{
+        count:{
+            type:Number
+        },
+        time:{
+            type:String
+        }
+    }]
 });
 function isNotempty(arr) {
     return arr.length>0;

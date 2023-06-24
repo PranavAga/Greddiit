@@ -28,7 +28,7 @@ async(req,res)=>{
             const element = tags[index];
             sg.tags.push(element);
         }
-        for (let index = 0; index < banned.length; index++) {
+        for (let index = 0; index < banned?.length; index++) {
             const element = banned[index];
             sg.banned.push(element);
         }
@@ -41,6 +41,12 @@ async(req,res)=>{
           return res.status(400).send(mgErrors.message);
         }
 
+        const total=sg.followers.length
+        const timestap=new Date()
+        let date=[timestap.getDate(),timestap.getMonth()+1,timestap.getFullYear()].join('/')
+        sg.user_growth.push({count:total,time:date})
+        
+        
         await sg.save();
         return res.send(sg);
     } catch (e) {
@@ -202,6 +208,18 @@ router.post('/mod/accept',verify,async(req,res)=>{
         if (index > -1) {
             sg.req_users.splice(index, 1);
         }
+
+        //storing stats
+        const total=sg.followers.length
+        const timestap=new Date()
+        let date=[timestap.getDate(),timestap.getMonth()+1,timestap.getFullYear()].join('/')
+        const i=sg.user_growth?.findIndex(e=>e.time===date)
+        if(i>-1){
+            sg.user_growth[i].count=total
+        }
+        else{
+            sg.user_growth.push({count:total,time:date})
+        }
         await sg.save()
         return res.send()
     } catch (error) {
@@ -228,6 +246,39 @@ router.post('/mod/reject',verify,async(req,res)=>{
         }
         await sg.save()
         return res.send()
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+router.get('/mod/stats/:id',
+verify,
+async(req,res)=>{
+    try{
+        const sg_id=req.params.id
+        const sg=await SG.findById(sg_id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
+        if(sg.mod._id!=req.id){
+            return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
+        };
+
+        const data={
+            user:sg.user_growth,
+            post:sg.post_growth,
+            vis:sg.visits
+        }
+        
+        // while (dt <= creation_date) {
+        //     for(let i=curr;i<sg.user_growth?.length;i++){
+
+        //     }
+        //     data.push([new Date(dt),followers]);
+        //     dt.setDate(dt.getDate() + 1);
+        // }
+
+        return res.send(data)
     } catch (error) {
         console.error(error);
         return res.status(500);
@@ -328,5 +379,34 @@ router.post('/sgs/leave',verify,async(req,res)=>{
         return res.status(500);
     }
 });
+router.post('/sgs/visitedSG',verify,async(req,res)=>{
+    try {
+        const {sg_id}=req.body;
+        const sg=await SG.findById(sg_id);
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
+        if(!sg.followers.includes(req.id)){
+            return res.status(400).send({errors: [{msg: "Not joined this SG"}]})
+        }
+        
+        const timestap=new Date()
+        let date=[timestap.getDate(),timestap.getMonth()+1,timestap.getFullYear()].join('/')
+        const total=1
+        const index=sg.visits?.findIndex(e=>e.time===date)
+        if(index>-1){
+            sg.visits[index].count+=1
+        }
+        else{
+            sg.visits.push({count:total,time:date})
+        }
+        await sg.save()
+        return res.send()
+    } catch (error) {
+        console.error(error);
+        return res.status(500);
+    }
+});
+
 
 export default router;

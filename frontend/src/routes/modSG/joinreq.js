@@ -17,10 +17,9 @@ export default function JoinRequests(){
 
     const [reqs,setReqs]=useState(null);
 
-    const loadReq =async (e)=>{
+    const loadReq =async ()=>{
         try {
             const res=await mysgAPI.getReqs(id);
-            console.log("resetting req")
             setReqs(res.req_users);
         } catch (error) {
             if (error.errors[0]){

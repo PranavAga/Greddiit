@@ -102,6 +102,21 @@ const mySG={
         } catch (e) {
             throw e.response.data;
         }
+    },
+    async getStats(id){
+        try {
+            const res=await api.get('/api/sg/mod/stats/'+id);
+            return res?.data;
+        } catch (e) {
+            throw e.response.data;
+        }
+    },
+    async visitedSG(sg_id){
+        try {
+            await api.post('/api/sg/sgs/visitedSG',{body:{sg_id}});
+        } catch (e) {
+            throw e.response.data;
+        }
     }
 }
 export default mySG; 

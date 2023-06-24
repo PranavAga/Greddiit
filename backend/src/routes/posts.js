@@ -21,7 +21,7 @@ async(req,res)=>{
             return res.status(400).send({errors:errors.array()});
         }
         const {title,content,sg_id}=req.body
-        const users_sg=await SG.findById(sg_id).select('followers')
+        const users_sg=await SG.findById(sg_id).select('followers post_growth')
         
         //if SG doesnt exists
         if(!users_sg){
@@ -38,8 +38,19 @@ async(req,res)=>{
             content: content
         })
         await post.save()
-        //check for banned words
-        const hasBanned=false
+
+        const total=1
+        const timestap=new Date()
+        let date=[timestap.getDate(),timestap.getMonth()+1,timestap.getFullYear()].join('/')
+        const i=users_sg.post_growth?.findIndex(e=>e.time===date)
+        if(i>-1){
+            users_sg.post_growth[i].count=total
+        }
+        else{
+            users_sg.post_growth.push({count:total,time:date})
+        }
+        
+        await users_sg.save();
         return res.send()
 
     } catch (error) {

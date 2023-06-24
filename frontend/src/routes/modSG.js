@@ -15,6 +15,7 @@ import {Theme} from './util/ColorTheme.js';
 import mysgAPI from '../api/sg';
 import JoinRequests from './modSG/joinreq';
 import Users from './modSG/users';
+import Stats from './modSG/stats';
 
 
 export default function ModSG(){
@@ -76,6 +77,9 @@ export default function ModSG(){
                         </TabPanel>
                         <TabPanel value='jr'>
                             <JoinRequests/>
+                        </TabPanel>
+                        <TabPanel value='stats'>
+                            <Stats/>
                         </TabPanel>
                     </TabContext>
                 </Box>
