@@ -44,7 +44,7 @@ async(req,res)=>{
         let date=[timestap.getDate(),timestap.getMonth()+1,timestap.getFullYear()].join('/')
         const i=users_sg.post_growth?.findIndex(e=>e.time===date)
         if(i>-1){
-            users_sg.post_growth[i].count=total
+            users_sg.post_growth[i].count+=total
         }
         else{
             users_sg.post_growth.push({count:total,time:date})
@@ -191,7 +191,7 @@ verify,
 async(req,res)=>{
     try{
         const sg_id=req.params.id
-        const users_sg=await SG.findById(sg_id).select('followers')
+        const users_sg=await SG.findById(sg_id).select('followers blocked_users')
         
         //if SG doesnt exists
         if(!users_sg){
@@ -203,6 +203,11 @@ async(req,res)=>{
         }
         
         const posts=await Post.find({sg: sg_id}).populate('creator','uname')
+        for(let i=0;i<posts.length;i++){
+            if(users_sg.blocked_users.includes(posts[i].creator._id)){
+                posts[i].creator.uname='Blocked User'
+            }
+        }
         return res.send(posts)
     } catch (error) {
         console.error(error);
@@ -372,12 +377,9 @@ async(req,res)=>{
         for(let i=0;i<user.saved_posts.length;i++){
             const post=await Post.findById(user.saved_posts[i]).populate('creator','uname').populate('sg','banned')
 
-            const sg=await SG.findById(post.sg)
-            if(sg.followers.includes(user_id)){
-                posts.push(post)
-            }
+            posts.push(post)
         }
-
+        console.log(user.saved_posts.length)
         return res.send({user_id,posts})
     } catch (error) {
         console.error(error);

@@ -6,6 +6,7 @@ import CommentRoundedIcon from '@mui/icons-material/CommentBankRounded'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import TextField from '@mui/material/TextField';
 import { Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Icon, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput } from "@mui/material";
 import Fade from '@mui/material/Fade';
@@ -20,6 +21,7 @@ import postsAPI from "../api/posts"
 import Top from './util/top';
 import {Theme} from './util/ColorTheme.js';
 import getProfile from "../api/getproflie";
+import reportAPI from "../api/report"
 
 export default function JoinedSG(){
     const params=useParams();
@@ -44,6 +46,8 @@ export default function JoinedSG(){
     const [comments,setComments]=useState({})
     const[savedPosts,setSavedPosts]=useState([])
     const[following,setFollowing]=useState([]);
+    const[openReport,setOpenReport]=useState(false);
+    const[nconcern,setNconcern]=useState();
 
     async function theSG(){
         try {
@@ -173,7 +177,7 @@ export default function JoinedSG(){
         }
     }
     function hasBanned(text){
-        if(bannedW?.length===0){
+        if(bannedW?.length===0 ||bannedW[0]===''){
             return false
         }
         for(let i=0;i<bannedW?.length;i++){
@@ -315,6 +319,27 @@ export default function JoinedSG(){
             }
         } 
     }
+    const handleSubmitReport=async(post_id)=>{
+        // const concern=document.getElementById("nconcern").value;
+        const concern=nconcern;
+        if(concern?.trim()) {
+            try {
+                await reportAPI.reportPost(post_id,concern);
+                setOpenReport(false)
+                setNconcern('')
+            } catch (error) {
+                if (error.errors?.[0]){
+                    alert(error.errors?.[0].msg)
+                }
+                else{
+                console.error(error);   
+                }
+            }
+        }
+        else{
+            window.alert("Report cannot be empty")
+        }
+    }
     const submitAddComment=async(post_id)=>{
         if(addComment[post_id]?.trim()){
             try {
@@ -440,14 +465,36 @@ export default function JoinedSG(){
                                     borderRadius: 2,
                                     backgroundColor: "white"
                                 }}>
-                                    <Box sx={{ display: 'flex',justifyContent: 'space-between'}}>
-                                    <h3>{filteredPost(post.title)}</h3>
-                                    <IconButton onClick={()=>handleSavePost(post._id)} color="primary">
-                                        {savedPosts?.includes(post._id)?<BookmarkIcon/>:<TurnedInNotIcon/>}
-                                    </IconButton>
+                                    <Box sx={{ display: 'flex', justifyContent:'space-between'}}>
+                                    <h3 
+                                    // sx={{flexGrow: 1}}
+                                    >{filteredPost(post.title)}</h3>
+                                    {/* Buttons */}
+                                    <Box>
+                                        <IconButton title="Report the post" onClick={()=>setOpenReport(true)} color="warning">
+                                            <ReportProblemIcon/>
+                                        </IconButton>
+                                        <Dialog open={openReport} onClose={()=>setOpenReport(false)}>
+                                        <DialogTitle>Report</DialogTitle>
+                                        <DialogContent>
+                                            {/* <DialogContentText>
+                                            </DialogContentText> */}
+                                            <TextField autoComplete='off' id="nconcern" label="Concern" variant="standard" value={nconcern} onChange={(e)=>setNconcern(e.target.value)}/><br></br>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={()=>setOpenReport(false)}>Cancel</Button>
+                                            <Button onClick={()=>handleSubmitReport(post._id)}>Submit</Button>
+                                        </DialogActions>
+                                        </Dialog>
+                                        <IconButton onClick={()=>handleSavePost(post._id)} color="primary">
+                                            {savedPosts?.includes(post._id)?<BookmarkIcon/>:<TurnedInNotIcon/>}
+                                        </IconButton>
                                     </Box>
-                                    <i>by {post.creator.uname}</i>&nbsp; 
+                                    </Box>
+                                    <i>by {post.creator.uname}</i>&nbsp;
+                                    {(post.creator.uname!=='Blocked User')&&
                                     <button onClick={()=>handleFollowCreator(post.creator._id)} disabled={(following?.includes(post.creator._id))||post.creator._id===user_id}>Follow {post.creator.uname}</button>
+                                    }
                                     <p>{filteredPost(post.content)}</p>
                                     <IconButton onClick={()=>handleUpVote(post.up_votes.includes(user_id),post._id)} 
                                         color={post.up_votes?.includes(user_id)?'upVote':voteDefault}>

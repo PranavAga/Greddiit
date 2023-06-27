@@ -16,7 +16,7 @@ import mysgAPI from '../api/sg';
 import JoinRequests from './modSG/joinreq';
 import Users from './modSG/users';
 import Stats from './modSG/stats';
-
+import Reports from './modSG/reports';
 
 export default function ModSG(){
     const params=useParams();
@@ -70,7 +70,7 @@ export default function ModSG(){
                             <Tab label='Users' value='users'></Tab>
                             <Tab label='Joining Requests' value='jr'></Tab>
                             <Tab label='Stats' value='stats'></Tab>
-                            <Tab label='Reported' value='Reported'></Tab>
+                            <Tab label='Reports' value='Reported'></Tab>
                         </Tabs>
                         <TabPanel value='users'>
                             <Users/>
@@ -80,6 +80,9 @@ export default function ModSG(){
                         </TabPanel>
                         <TabPanel value='stats'>
                             <Stats/>
+                        </TabPanel>
+                        <TabPanel value='Reported'>
+                            <Reports/>
                         </TabPanel>
                     </TabContext>
                 </Box>

@@ -248,30 +248,30 @@ export default function Saved(){
                                     backgroundColor: "white"
                                 }}>
                                     <Box sx={{ display: 'flex',justifyContent: 'space-between'}}>
-                                    <h3>{censorPost(post.sg.banned,post.title)}</h3>
-                                    <IconButton onClick={()=>handleUnsave(post._id)} color="primary">
+                                    <h3>{censorPost(post?.sg?.banned,post?.title)}</h3>
+                                    <IconButton onClick={()=>handleUnsave(post?._id)} color="primary">
                                         <BookmarkIcon>unsave</BookmarkIcon>
                                     </IconButton>
                                     </Box>
-                                    <i>by {post.creator.uname}</i>&nbsp; 
-                                    <p>{censorPost(post.sg.banned,post.content)}</p>
-                                    <IconButton onClick={()=>handleUpVote(post.up_votes.includes(user_id),post._id)} 
-                                        color={post.up_votes?.includes(user_id)?'upVote':voteDefault}>
+                                    <i>by {post?.creator.uname}</i>&nbsp; 
+                                    <p>{censorPost(post?.sg.banned,post?.content)}</p>
+                                    <IconButton onClick={()=>handleUpVote(post?.up_votes.includes(user_id),post?._id)} 
+                                        color={post?.up_votes?.includes(user_id)?'upVote':voteDefault}>
                                         <NorthIcon/>
                                     </IconButton>
-                                    {post.up_votes?.length-post.down_votes?.length}
-                                    <IconButton onClick={()=>handleDownVote(post.down_votes.includes(user_id),post._id)} 
-                                        color={post.down_votes?.includes(user_id)?'downVote':voteDefault}>
+                                    {post?.up_votes?.length-post?.down_votes?.length}
+                                    <IconButton onClick={()=>handleDownVote(post?.down_votes.includes(user_id),post?._id)} 
+                                        color={post?.down_votes?.includes(user_id)?'downVote':voteDefault}>
                                         <SouthIcon/>
                                     </IconButton>
                                     &nbsp;&nbsp;
                                     {post?.comments?.length}
-                                    <IconButton onClick={()=>handleShowComments(post._id)}>
+                                    <IconButton onClick={()=>handleShowComments(post?._id)}>
                                         <CommentRoundedIcon/>
                                     </IconButton>
-                                    {(showComments?.includes(post._id))&&
+                                    {(showComments?.includes(post?._id))&&
                                     <Box sx={{ display: 'flex' }}>
-                                        <Fade in={showComments?.includes(post._id)}>{
+                                        <Fade in={showComments?.includes(post?._id)}>{
                                             <Box
                                             sx={{
                                                 border:1,
@@ -284,8 +284,8 @@ export default function Saved(){
                                                 {/* All comments */}
                                                 <Box>
                                                     {
-                                                        // comments[post._id]
-                                                        comments[post._id]?.map((comment)=>(
+                                                        // comments[post?._id]
+                                                        comments[post?._id]?.map((comment)=>(
                                                             <Box
                                                             sx={{
                                                                 borderRadius: 1,
@@ -296,16 +296,16 @@ export default function Saved(){
                                                             }}
                                                             >
                                                                 <i>commented by {comment.usname.uname}</i>
-                                                                <p>{censorPost(post.sg.banned,comment.text)}</p>
+                                                                <p>{censorPost(post?.sg.banned,comment.text)}</p>
                                                             </Box>
                                                         ))
                                                     }
                                                 </Box>
                                                 
                                                 {/* Add comment */}
-                                                <OutlinedInput value={addComment?.[post._id]} onChange={(e)=>handleAddComment(e.target.value,post._id)} type="text" endAdornment={
+                                                <OutlinedInput value={addComment?.[post?._id]} onChange={(e)=>handleAddComment(e.target.value,post?._id)} type="text" endAdornment={
                                                         <InputAdornment position="end">
-                                                            <IconButton onClick={()=>submitAddComment(post._id)}>
+                                                            <IconButton onClick={()=>submitAddComment(post?._id)}>
                                                                 <AddCircleIcon/>
                                                             </IconButton>
                                                         </InputAdornment>

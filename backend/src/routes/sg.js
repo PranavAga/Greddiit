@@ -28,10 +28,13 @@ async(req,res)=>{
             const element = tags[index];
             sg.tags.push(element);
         }
-        for (let index = 0; index < banned?.length; index++) {
-            const element = banned[index];
-            sg.banned.push(element);
+        if(req.banned){
+            for (let index = 0; index < banned?.length; index++) {
+                const element = banned[index];
+                sg.banned.push(element);
+            }
         }
+        
         sg.followers.push(req.id);
         sg.prev_users.push(req.id);
         if(req.file){
@@ -126,7 +129,15 @@ async(req,res)=>{
         const sg=await SG.findById(id);
         // verify has joined
         if(!sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Haven't joinned this SG"}]})
+            return res.status(400).send({errors: [{msg: "Haven't joined this SG"}]})
+        }
+        //if banned
+        if(sg.blocked_users?.includes(req.id)){
+            const index = sg.blocked_users.indexOf(req.id);
+            if (index > -1) {
+                sg.blocked_users.splice(index, 1);
+            }
+            return res.status(400).send({errors: [{msg: "Have been banned from the SG"}]})
         }
         return res.send({
             sg,
