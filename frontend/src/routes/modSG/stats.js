@@ -23,14 +23,15 @@ export default function Stats(){
     const[userG,setUserG]=useState([])
     const[postG,setPostG]=useState([])
     const[visitorG,setVisitorG]=useState([])
+    const[reports,setReports]=useState([])
 
     async function getUserG(){
         try {
             const res=await mysgAPI.getStats(id);
-            console.log(res)
             setUserG(res.user);
             setPostG(res.post);
             setVisitorG(res.vis);
+            setReports(res.report);
         } catch (error) {
             if (error.errors[0]){
                 return navigate('/');
@@ -41,46 +42,6 @@ export default function Stats(){
         }
     }
     
-    const option = {
-        xAxis: [{
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        }
-        ,
-        {
-            type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            gridIndex: 1
-        }
-    ],
-        yAxis: [
-            {
-        },
-        {
-            gridIndex: 1
-        }
-    ],
-    grid: [
-        {
-          bottom: '60%'
-        },
-        {
-          top: '60%'
-        }
-      ],
-        series: [
-          {
-            data: [120, 200, 150, 80, 70, 110, 130],
-            type: 'line'
-          },
-          {
-            data: [100, 100, 100, 100, 70, 110, 130],
-            type: 'line',
-            xAxisIndex: 1,
-            yAxisIndex: 1
-          }
-        ]
-    };
     useEffect(()=>{
         getUserG();
     },[])
@@ -114,10 +75,17 @@ export default function Stats(){
                                 {
                                   left: '20%',bottom:'47%',
                                   text: 'Daily visitors'
+                                },
+                                {
+                                  right: '20%',bottom:'47%',
+                                  text: 'Reports: total: '+(reports?.total)
                                 }
                             ],
+                            tooltip: {
+                              trigger: 'item'
+                            },
                             legend:{
-                                data:['total users','added posts','visitors']
+                              data:['total users','added posts','visitors']
                             },
                             xAxis: [{
                               type: 'category',
@@ -155,20 +123,32 @@ export default function Stats(){
                             ],
                             series: [
                               {
+                                name:'total users',
                                 data: userG.map(a => a.count),
                                 type: 'line'
                               },
                               {
+                                name: 'added posts',
                                 data: postG.map(a => a.count),
                                 type: 'line',
                                 xAxisIndex: 1,
                                 yAxisIndex: 1
                               },
                               {
+                                name:'visitors',
                                 data: visitorG.map(a => a.count),
                                 type: 'line',
                                 xAxisIndex: 2,
                                 yAxisIndex: 2
+                              },
+                              {
+                                type: 'pie',
+                                center: ['73%','73%'],
+                                radius:'40%',
+                                data:[
+                                  {value:(reports?.deleted),name: "Deleted"},
+                                  {value:(reports?.total-reports?.deleted),name: "Other"}
+                                ]
                               }
                             ]
                         }

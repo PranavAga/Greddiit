@@ -253,7 +253,7 @@ export default function Saved(){
                                         <BookmarkIcon>unsave</BookmarkIcon>
                                     </IconButton>
                                     </Box>
-                                    <i>by {post?.creator.uname}</i>&nbsp; 
+                                    <i>by {post?.creator?.uname}</i>&nbsp; 
                                     <p>{censorPost(post?.sg.banned,post?.content)}</p>
                                     <IconButton onClick={()=>handleUpVote(post?.up_votes.includes(user_id),post?._id)} 
                                         color={post?.up_votes?.includes(user_id)?'upVote':voteDefault}>

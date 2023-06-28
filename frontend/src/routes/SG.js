@@ -338,6 +338,7 @@ export default function JoinedSG(){
         }
         else{
             window.alert("Report cannot be empty")
+            setNconcern('')
         }
     }
     const submitAddComment=async(post_id)=>{

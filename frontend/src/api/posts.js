@@ -67,6 +67,7 @@ const Posts={
     },
     async savePost(post_id){
         try {
+            console.log(post_id)
             const res=await api.post('/api/posts/savepost',{body:{post_id}});
             return res?.data
         } catch (error) {

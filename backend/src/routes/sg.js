@@ -278,7 +278,8 @@ async(req,res)=>{
         const data={
             user:sg.user_growth,
             post:sg.post_growth,
-            vis:sg.visits
+            vis:sg.visits,
+            report:sg.report_stats
         }
         
         // while (dt <= creation_date) {
@@ -380,6 +381,7 @@ router.post('/sgs/leave',verify,async(req,res)=>{
                 const index = user.saved_posts[i].indexOf(req.id);
                 if (index > -1) {
                     user.saved_posts[i].splice(index, 1);
+                    i-=1
                 }
             }
         }

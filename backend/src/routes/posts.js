@@ -276,7 +276,7 @@ async(req,res)=>{
     }
 });
 router.post('/savepost',
-verify,
+verify, 
 async(req,res)=>{
     try{
         const {post_id}=req.body
@@ -321,11 +321,11 @@ async(req,res)=>{
         if(!users_sg){
             return res.status(400).send({errors: [{msg: "SG doesn't exits"}]})
         }
-        //if user hasn't joined the SG
-        if(!users_sg.followers.includes(req.id)){
-            return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
-        }
-        //already saved
+        // //if user hasn't joined the SG
+        // if(!users_sg.followers.includes(req.id)){
+        //     return res.status(400).send({errors: [{msg: "Not joined the SG"}]})
+        // }
+        //not saved
         if(!user.saved_posts.includes(post_id)){
             return res.status(400).send({errors: [{msg: "Not saved"}]})
         }
@@ -373,13 +373,17 @@ async(req,res)=>{
         const user_id=req.id
         const user=await Users.findById(user_id)
         const posts=[]
-        
         for(let i=0;i<user.saved_posts.length;i++){
-            const post=await Post.findById(user.saved_posts[i]).populate('creator','uname').populate('sg','banned')
-
-            posts.push(post)
+            const post=await Post.findById(user.saved_posts[i]).populate('creator','uname').populate('sg','banned followers')
+            if(post){
+                if(post.sg.followers.includes(user_id)){
+                    posts.push(post)
+                }}
+                else{
+                    console.log("undefined post")
+                } 
+            
         }
-        console.log(user.saved_posts.length)
         return res.send({user_id,posts})
     } catch (error) {
         console.error(error);

@@ -29,6 +29,18 @@ async(req,res)=>{
         });
         await report.save()
 
+        const post=await Post.findById(post_id).populate('sg','report_stats')
+        if(!post.sg.report_stats.total){
+            const sg_id=post.sg
+            const posts= await Post.find({sg:sg_id},{_id:1}) 
+            let reports= await Report.find({post:{$in:posts}})
+            post.sg.report_stats.total=reports.length
+        }
+        else{
+            post.sg.report_stats.total+=1
+        }
+        post.sg.save()
+
         return res.send();
     } catch (e) {
         console.error(e);
@@ -62,10 +74,10 @@ async(req,res)=>{
         // const limit_ms=60*60*1000;
         
         reports=reports.filter(async function(report){
-            if(report.status.value===0 &&curr_date-report.status.time>=limit_ms){
+            if(report.status.value===0 &&(curr_date-report.status.time>=limit_ms)){
                 await Report.findByIdAndDelete(report._id);
             }
-            return report.status.value===0 && curr_date-report.status.time>=limit_ms
+            return report.status.value===0 && (curr_date-report.status.time>=limit_ms)
         })
 
         // console.log(reports.length)
@@ -173,7 +185,7 @@ async(req,res)=>{
             }
         })
         //verify mod
-        if(mod_id!=report.post.sg.mod._id){
+        if(mod_id!=report.post?.sg.mod._id){
             return res.status(400).send({errors: [{msg: "Not the moderator of this SG"}]})
         }
         //verify sg
@@ -181,7 +193,10 @@ async(req,res)=>{
             return res.status(400).send({errors: [{msg: "Post not part of the SG"}]})
         }
         
+        //deleting that post
         await Post.findByIdAndDelete(report.post._id)
+
+        //deleting it form saved posts
         const users_saves=await User.find({saved_posts:report.post._id})
         for(let i=0;i<users_saves.length;i++){
             const index = users_saves[i].saved_posts.indexOf(report.post._id);
@@ -190,7 +205,13 @@ async(req,res)=>{
             }
             users_saves[i].save()
         }
-        await report.delete()
+
+        //deleting all reports about that post
+        await Report.findByIdAndDelete({post:report.post._id})
+
+        const sg=await SG.findById(sg_id)
+        sg.report_stats.deleted+=1
+        sg.save()
         return res.send();
     } catch (e) {
         console.error(e);

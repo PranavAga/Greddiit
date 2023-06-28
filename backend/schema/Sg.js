@@ -105,7 +105,17 @@ const SGSchema=new mongoose.Schema({
         time:{
             type:String
         }
-    }]
+    }],
+    report_stats:{
+        total:{
+            type:Number,
+            default:0
+        },
+        deleted:{
+            type:Number,
+            default:0
+        }
+    }
 });
 function isNotempty(arr) {
     return arr.length>0;
