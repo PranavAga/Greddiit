@@ -33,30 +33,20 @@ export default function Top(){
                 <Box sx={{display:'flex', flexGrow:1}}>
                     <AppBar component="nav">
                         <Toolbar>
-                        <img src='/logo.png' alt='Logo' style={{
-                        height: '40px',
-                        objectFit: 'cover'
-                        }}>
-                        </img>
-                        <h1 style={{display: 'inline', color: ''}}>Greddiit</h1>
-                <button style={{position: 'absolute' ,top:20 ,right:15 }} onClick={logOut}>Logout</button>
+                            <Box onClick={()=>navigate('/')}>
+                            <img src='/logo.png' alt='Logo' style={{
+                            height: '40px',
+                            objectFit: 'cover'
+                            }}>
+                            </img>
+                            <h1 style={{display: 'inline', color: ''}}>Greddiit</h1>
+                            </Box>
+                        <button style={{position: 'absolute' ,top:20 ,right:15 }} onClick={logOut}>Logout</button>
                         </Toolbar>
                     </AppBar>
                     <Offset/>
                 </Box>
-{/*                  
-                <Box sx={{
-                    backgroundColor: 'primary.light'
-                }}>
-                <img src='/logo.png' alt='Logo' style={{
-                    height: '40px',
-                    objectFit: 'cover'
-                }}></img>
-                <h1 style={{display: 'inline', color: ''}}>Greddiit</h1>
-                <button style={{position: 'absolute' ,top:20 ,right:15 }} onClick={logOut}>Logout</button>
-                </Box>
-                */}
-            </CssBaseline>
+                </CssBaseline>
             </ThemeProvider>
         </>
     )
