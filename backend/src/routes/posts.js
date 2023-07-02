@@ -10,6 +10,17 @@ import Followspair from '../../schema/UserFF.js';
 const router=express.Router();
 router.use(express.json());
 
+function censorPost(bannedW,text){
+    let ftext=text;
+    if(bannedW?.length===0){
+        return ftext;
+    }
+    for(let i=0;i<bannedW?.length && ftext;i++){
+        ftext=ftext.replaceAll(RegExp(bannedW[i],"gi"),'*'.repeat(bannedW[i].length))
+    }
+    return ftext;
+}
+
 router.post('/create',
 body('title').not().isEmpty(),
 body('content').not().isEmpty(),
@@ -191,7 +202,7 @@ verify,
 async(req,res)=>{
     try{
         const sg_id=req.params.id
-        const users_sg=await SG.findById(sg_id).select('followers blocked_users')
+        const users_sg=await SG.findById(sg_id).select('followers blocked_users banned')
         
         //if SG doesnt exists
         if(!users_sg){
@@ -207,6 +218,8 @@ async(req,res)=>{
             if(users_sg.blocked_users.includes(posts[i].creator._id)){
                 posts[i].creator.uname='Blocked User'
             }
+            posts[i].title=censorPost(users_sg.banned,posts[i].title)
+            posts[i].content=censorPost(users_sg.banned,posts[i].content)
         }
         return res.send(posts)
     } catch (error) {
@@ -377,11 +390,14 @@ async(req,res)=>{
             const post=await Post.findById(user.saved_posts[i]).populate('creator','uname').populate('sg','banned followers')
             if(post){
                 if(post.sg.followers.includes(user_id)){
+                    post.title=censorPost(post.sg.banned,post.title)
+                    post.content=censorPost(post.sg.banned,post.content)
                     posts.push(post)
-                }}
-                else{
-                    console.log("undefined post")
-                } 
+                }
+            }
+            else{
+                console.log("undefined post")
+            } 
             
         }
         return res.send({user_id,posts})
