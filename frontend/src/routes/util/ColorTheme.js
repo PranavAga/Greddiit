@@ -27,5 +27,11 @@ export const Theme=createTheme({
         
         
         
+    },
+    typography:{
+        fontFamily:"sans-serif",
+        button:{
+            textTransform:'none'
+        }
     }
 });
