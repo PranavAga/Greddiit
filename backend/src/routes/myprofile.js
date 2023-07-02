@@ -126,10 +126,11 @@ router.get('/getfollowing',verify,async(req,res)=>{
     }
 });
 
-router.post('/remfollower',verify,async(req,res)=>{
+router.post('/remFF',verify,async(req,res)=>{
     try {
         const {id}=req.body
         await Followspair.findByIdAndDelete(id._id);
+        return res.send()
     } catch (error) {
         console.error(error);
         return res.status(500);

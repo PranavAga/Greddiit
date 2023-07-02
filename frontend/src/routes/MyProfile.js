@@ -178,11 +178,20 @@ export default function MyProfile(){
         setOpenfg(false);
     };
     async function remFollower(id){
-        await profileAPI.remFollower(id);
-        getFollowers();
-        getFollowing();
-        setOpenfs(false);
-        setOpenfg(false);
+        try {
+            await profileAPI.remFollower(id);
+            getFollowers();
+            getFollowing();
+            setOpenfs(false);
+            setOpenfg(false);
+        } catch (error) {
+            if (error.errors?.[0]){
+                alert(error.errors[0].msg);
+            }
+            else{
+             console.error(error);   
+            }
+        }
     }
         return(
             <>

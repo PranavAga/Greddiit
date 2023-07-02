@@ -35,7 +35,7 @@ const getProfile={
     },
     async remFollower(id){
         try {
-            await api.post('/api/profile/remfollower',{body:{id}});
+            await api.post('/api/profile/remFF',{body:{id}});
         } catch (error) {
             throw error.response.data;
         }

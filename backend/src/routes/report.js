@@ -39,7 +39,7 @@ async(req,res)=>{
         else{
             post.sg.report_stats.total+=1
         }
-        post.sg.save()
+        await post.sg.save()
 
         return res.send();
     } catch (e) {
@@ -203,7 +203,7 @@ async(req,res)=>{
             if (index > -1) {
                 users_saves[i].saved_posts.splice(index, 1);
             }
-            users_saves[i].save()
+            await users_saves[i].save()
         }
 
         //deleting all reports about that post
@@ -211,7 +211,7 @@ async(req,res)=>{
 
         const sg=await SG.findById(sg_id)
         sg.report_stats.deleted+=1
-        sg.save()
+        await sg.save()
         return res.send();
     } catch (e) {
         console.error(e);

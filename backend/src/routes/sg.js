@@ -6,6 +6,7 @@ import verify from '../middleware/verify.js'
 
 import {body,param,validationResult} from 'express-validator';
 import Post from '../../schema/Post.js';
+import Report from '../../schema/Report.js';
 
 const router=express.Router();
 const upload = multer({ storage: multer.memoryStorage() })
@@ -98,9 +99,29 @@ async(req,res)=>{
 router.post('/del',verify,async(req,res)=>{
     try {
         const {id}=req.body;
-        // console.log('deleting sg',id);
-        const deleted=await SG.findByIdAndDelete(id);
-        // console.log(deleted)
+        const sg=await SG.findById(id);
+        if(sg.mod._id!=req.id){
+            return res.status(400).send({errors: [{msg: "Don't have access to this SG"}]})
+        }
+
+        //deleting all posts
+        const posts=await Post.find({sg:id})
+        for( let i=0;i<posts.length;i++){
+            //deleting saved posts
+            const users_saves=await Users.find({saved_posts:posts[i]._id})
+            for(let j=0;j<users_saves.length;j++){
+                const index = users_saves[j].saved_posts.indexOf(posts[i]._id);
+                if (index > -1) {
+                    users_saves[j].saved_posts.splice(index, 1);
+                }
+                await users_saves[j].save()
+            } 
+            //delete all reports
+            await Report.deleteMany({post:posts[i]._id})
+            await Post.deleteOne({_id:posts[i]._id})
+        }
+
+        const deleted=await SG.deleteOne({_id:id});
         return res.send({deleted})
     } catch (error) {
         console.error(error);
@@ -127,6 +148,10 @@ async(req,res)=>{
     try {
         const {id}=req.body;
         const sg=await SG.findById(id);
+        
+        if(!sg){
+            return res.status(400).send({errors: [{msg: "SG not found"}]})
+        }
         // verify has joined
         if(!sg.followers.includes(req.id)){
             return res.status(400).send({errors: [{msg: "Haven't joined this SG"}]})
@@ -385,7 +410,7 @@ router.post('/sgs/leave',verify,async(req,res)=>{
                 }
             }
         }
-        user.save()
+        await user.save()
         return res.send()
     } catch (error) {
         console.error(error);

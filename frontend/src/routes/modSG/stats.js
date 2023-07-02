@@ -65,7 +65,7 @@ export default function Stats(){
                             title: [
                                 {
                                   left: '20%',top:'5%',
-                                  text: 'Growth of the subgreddiit'
+                                  text: 'Daily joinned users'
                                 },
                                 {
                                   right: '20%',top:'5%',
