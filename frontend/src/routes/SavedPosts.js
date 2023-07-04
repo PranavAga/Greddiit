@@ -8,8 +8,7 @@ import NorthIcon from '@mui/icons-material/North';
 import CommentRoundedIcon from '@mui/icons-material/CommentBankRounded'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import TextField from '@mui/material/TextField';
-import {   Icon, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput } from "@mui/material";
+import { IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import Fade from '@mui/material/Fade';
 import { useEffect, useState } from 'react';
 
@@ -61,23 +60,6 @@ export default function Saved(){
             for(let i=0;i<res?.posts?.length;i++){
                 getComments(res.posts[i]._id)
             }
-        } catch (error) {
-            if (error.errors[0]){
-                return navigate('/');
-            }
-            else{
-             console.error(error);   
-            }
-        }
-    }
-    async function getComments(post_id){
-        try {
-            const res=await postsAPI.getAllComments(post_id);
-            let updated_comments=comments;
-            updated_comments[post_id]=res;
-            setComments(comments => ({
-            ...updated_comments
-        }));
         } catch (error) {
             if (error.errors[0]){
                 return navigate('/');

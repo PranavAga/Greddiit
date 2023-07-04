@@ -8,7 +8,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import TextField from '@mui/material/TextField';
-import { Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Icon, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput } from "@mui/material";
+import { Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import Fade from '@mui/material/Fade';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -57,14 +57,15 @@ export default function JoinedSG(){
             setBannedW(res.sg.banned)
             //const STRING_CHAR = String.fromCharCode.apply(null, res.img.data.data);
             // const base64String1 = btoa(STRING_CHAR);//DEPRECATED
-            const base64String1 = Buffer.from(res.img.data.data).toString('base64')
+            const base64String1 = Buffer.from(res.sg.img.data.data).toString('base64')
+            console.log(base64String1)
             setImageb('data:image/gif; base64,'+base64String1)
             if(base64String1){
                 setHasImage(true)
             }
             
         } catch (error) {
-            if (error.errors[0]){
+            if (error.errors?.[0]){
                 console.log(error.errors[0])
                 return navigate('/');
             }
@@ -430,7 +431,6 @@ export default function JoinedSG(){
                             borderRadius: 3,
                             display: 'flex',
                             p:2,
-                            border:2,
                             flexGrow: 1,
                             // width:'100%',
                             flexDirection: 'column'

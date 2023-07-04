@@ -3,7 +3,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import {Theme} from './util/ColorTheme.js';
 import { ThemeProvider } from '@mui/material/styles';
-import {Box} from '@mui/system';
 import { CssBaseline } from "@mui/material";
 
 import profileAPI from '../api/getproflie';
@@ -46,9 +45,6 @@ export default function MyProfile(){
     const [pemail,setPemail]=useState();
     const [page,setPage]=useState();
     const [pcont,setPcont]=useState();
-    const []=useState();
-    const []=useState();
-    const []=useState();
 
     // let pname,pemail,page,pcont,plname,pfname;
 
