@@ -25,5 +25,80 @@ Bonus implemented:
 
 ## Some higlights:
 
+<center>
 
+<figure>
+  <img src="./highlights/G-login.png" alt="Reigister">
+  <figcaption>
+  Login/Register
+  </figcaption>
+</figure>
+<br>
 
+<figure>
+  <img src="./highlights/G-create_sg.png" alt="Create SG">
+  <figcaption>
+  Create a SG (subgreddiit)
+  </figcaption>
+</figure>
+<br>
+
+<figure>
+  <img src="./highlights/G-search_sg.png" alt="Search">
+  <figcaption>
+  Search an SG from the list of all SGs
+  </figcaption>
+</figure>
+<br>
+
+<figure>
+  <img src="./highlights/G-requests.png" alt="requests">
+  <figcaption>
+  Accept/Reject the joinning requests
+  </figcaption>
+</figure>
+<br>
+
+<figure>
+  <img src="./highlights/G-mod.png" alt="stats">
+  <figcaption>
+  View statistics of your SG
+  </figcaption>
+</figure>
+<br>
+
+<figure>
+  <img src="./highlights/G-reports.png" alt="view reports">
+  <figcaption>
+  Manage reports of your SG: Block user, Delete the post, or Ignore the Report
+  </figcaption>
+</figure>
+<br>
+<figure>
+  <img src="./highlights/G-report_block_timer.png" alt="block timer">
+  <figcaption>
+  Timer for clocking the user
+  </figcaption>
+</figure>
+<br>
+
+<figure>
+  <img src="./highlights/G-createPost.png" alt="create post">
+  <figcaption>
+  Create a post in an SG. after joinning it.
+  </figcaption>
+</figure>
+<br>
+
+<figure>
+  <img src="./highlights/G-report.png" alt="report post">
+  <figcaption>
+  Report a post to the moderator
+  </figcaption>
+</figure>
+<br>
+
+</center>
+
+___
+For more details, refer to the [assignment document](assignment.pdf).
