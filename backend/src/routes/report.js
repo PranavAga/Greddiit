@@ -205,13 +205,13 @@ async(req,res)=>{
             }
             await users_saves[i].save()
         }
-
-        //deleting all reports about that post
-        await Report.findByIdAndDelete({post:report.post._id})
-
         const sg=await SG.findById(sg_id)
         sg.report_stats.deleted+=1
         await sg.save()
+
+        //deleting all reports about that post
+        await Report.deleteMany({post:report.post._id})
+
         return res.send();
     } catch (e) {
         console.error(e);
@@ -219,4 +219,4 @@ async(req,res)=>{
     }
 });
 
-export default router;
+export default router; 

@@ -51,9 +51,15 @@ const BlockButton = () => {
             await reportAPI.block(report_id,id)
             getAllReports()
         } catch (error) {
-            if (error.errors[0]){
-                return navigate('/');
+            if(error.errors[0]){
+                if (error.errors[0].msg!=="Cannot block the moderator"){
+                    return navigate('/');
+                }
+                else{
+                    window.alert("Cannot block the moderator")
+                }
             }
+            
             else{
              console.error(error);   
             }
