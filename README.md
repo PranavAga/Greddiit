@@ -40,7 +40,7 @@ Bonus implemented:
     Create a SG (subgreddiit)
     </figcaption>
   <img src="./highlights/G-create_sg.png" alt="Create SG">
-  </figure><br>
+  </figure><br><br>
 - <figure>
   <figcaption>
   Search an SG from the list of all SGs
