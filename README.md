@@ -30,18 +30,18 @@ Login/Register
 <br/><br/>
 
 <figure>
-  <img src="./highlights/G-login.png" alt="Reigister">
   <figcaption>
   Login/Register
   </figcaption>
+  <img src="./highlights/G-login.png" alt="Reigister">
 </figure>
 <br>
 <br>
 <figure>
-  <img src="./highlights/G-create_sg.png" alt="Create SG">
   <figcaption>
-  Create a SG (subgreddiit)
-  </figcaption>
+    Create a SG (subgreddiit)
+    </figcaption>
+  <img src="./highlights/G-create_sg.png" alt="Create SG">
 </figure>
 <br>
 
