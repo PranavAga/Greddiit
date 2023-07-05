@@ -25,9 +25,9 @@ Bonus implemented:
 
 ## Some highlights:
 
-![Picture](./highlights/G-login.png)
 Login/Register
-<br/>
+![Login/Register](./highlights/G-login.png)
+<br/><br/>
 
 <figure>
   <img src="./highlights/G-login.png" alt="Reigister">
@@ -35,8 +35,8 @@ Login/Register
   Login/Register
   </figcaption>
 </figure>
-<br/>
-<br/>
+<br>
+<br>
 <figure>
   <img src="./highlights/G-create_sg.png" alt="Create SG">
   <figcaption>
