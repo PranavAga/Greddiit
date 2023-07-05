@@ -18,6 +18,9 @@ export const Theme=createTheme({
             main: '#d1d841',
             light: '#f4f5e6'
         },
+        tertiary:{
+            main:'#e3c51c'
+        },
         upVote:{
             main:'#a2a82a'
         },

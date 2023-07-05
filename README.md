@@ -1,20 +1,29 @@
 # GREDDIIT
-## Reddit, but different 
+## *Reddit, but different* 
 ### Made as an assignment for the course Design and Analysis of Software Systems (S23CS6.301)
-<!-- # DASS Assignment 1
+____
 
-## Part 2 and Part 3 submission
+## How to run?
 
-2021113018
-
-- Username used instead of email for Login
-- Using tabs instead of links, when asked to show links on same page.
-- An SG has atleast 1 tag
 - Running without docker:
-  - > ./2021113018/frontend: npm start
-  - > ./2021113018/backend: npm start
+  - > ./\<root>/frontend> npm start
+  - > ./\<root>/backend> npm start
 - Running with docker:
-  - > ./2021113018:
+  - > ./\<root>>
     - > docker compose build
     - > docker compose up
-    - open "localhost:3000"in browser -->
+- open "localhost:3000" in browser
+
+___
+All the basic requirements were implemented.<br>
+Bonus implemented:
+- Upload image while creating a subgreddiit, and show it when it's page is opened
+- Displaying stats in form of graphs.
+- For the list of all subgreddiits, implemented:
+    - Fuzzy search
+    - Nested sort
+
+## Some higlights:
+
+
+

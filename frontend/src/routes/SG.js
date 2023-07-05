@@ -517,8 +517,8 @@ export default function JoinedSG(){
                                             <Box
                                             sx={{
                                                 border:1,
-                                                borderColor: 'black',
-                                                backgroundColor: '#c2c2c2',
+                                                borderColor: '#c2c2c2',
+                                                backgroundColor: '#f2f2f2',
                                                 borderRadius: 2,
                                                 p:1                                            }}
                                             >
@@ -529,9 +529,10 @@ export default function JoinedSG(){
                                                         comments[post._id]?.map((comment)=>(
                                                             <Box
                                                             sx={{
-                                                                borderRadius: 1,
-                                                                borderColor: '#e3c51c',
                                                                 border:1,
+                                                                borderRadius: 1,
+                                                                borderColor: "tertiary.main",
+                                                                backgroundColor:"#fcf9e8",
                                                                 m:1,
                                                                 p:1
                                                             }}

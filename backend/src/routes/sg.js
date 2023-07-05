@@ -29,7 +29,7 @@ async(req,res)=>{
             const element = tags[index];
             sg.tags.push(element);
         }
-        if(req.banned){
+        if(req.body.banned){
             for (let index = 0; index < banned?.length; index++) {
                 const element = banned[index];
                 sg.banned.push(element);

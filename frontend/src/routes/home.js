@@ -38,7 +38,7 @@ export default function Home(){
         <main>
             <Top/>
             <Box>
-            <h1>HOME</h1>
+            <h1>&nbsp;&nbsp; HOME</h1>
             <ThemeProvider theme={theme}> 
             <br></br>
             <Box sx={{

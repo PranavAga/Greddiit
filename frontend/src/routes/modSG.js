@@ -63,7 +63,7 @@ export default function ModSG(){
             }}
             >
                 <h1>{sname}</h1>
-                <button onClick={()=>{navigate('/')}}>MySGs</button>
+                {/* <button onClick={()=>{navigate('/')}}>MySGs</button> */}
                 <Box>
                     <TabContext value={tab}>
                         <Tabs centered value={tab} textColor='primary' onChange={(e,nval)=>setTab(nval)}>
