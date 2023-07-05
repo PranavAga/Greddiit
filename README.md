@@ -25,7 +25,9 @@ Bonus implemented:
 
 ## Some highlights:
 
-<div style="text-align:center">
+![Picture](./highlights/G-login.png)
+Login/Register
+<br/>
 
 <figure>
   <img src="./highlights/G-login.png" alt="Reigister">
@@ -34,7 +36,7 @@ Bonus implemented:
   </figcaption>
 </figure>
 <br/>
-
+<br/>
 <figure>
   <img src="./highlights/G-create_sg.png" alt="Create SG">
   <figcaption>
@@ -98,6 +100,5 @@ Bonus implemented:
 </figure>
 <br>
 
-</div>
 ___
 For more details, refer to the [assignment document](assignment.pdf).
