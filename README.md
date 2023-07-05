@@ -34,7 +34,8 @@ Bonus implemented:
     Login/Register
     </figcaption>
     <img src="./highlights/G-login.png" alt="Reigister">
-  </figure><br>
+  </figure><br><br>
+
 - <figure>
   <figcaption>
     Create a SG (subgreddiit)
@@ -46,7 +47,7 @@ Bonus implemented:
   Search an SG from the list of all SGs
   </figcaption>
   <img src="./highlights/G-search_sg.png" alt="Search">
-  </figure><br>
+  </figure><br><br>
 
 - <figure>
   <figcaption>
@@ -54,41 +55,41 @@ Bonus implemented:
     </figcaption>
     <img src="./highlights/G-requests.png" alt="requests">
   </figure>
-  <br>
+  <br><br>
 
 - <figure>
   <figcaption>
   View statistics of your SG
   </figcaption>
   <img src="./highlights/G-mod.png" alt="stats">
-  </figure><br>
+  </figure><br><br>
 
 - <figure>
   <figcaption>
   Manage reports of your SG: Block user, Delete the post, or Ignore the Report
   </figcaption>
   <img src="./highlights/G-reports.png" alt="view reports">
-  </figure><br>
+  </figure><br><br>
 - <figure>
     <figcaption>
   Timer for clocking the user
   </figcaption>
   <img src="./highlights/G-report_block_timer.png" alt="block timer">
-  </figure><br>
+  </figure><br><br>
 
 - <figure>
   <figcaption>
   Create a post in an SG. after joinning it.
   </figcaption>
   <img src="./highlights/G-createPost.png" alt="create post">
-  </figure><br>
+  </figure><br><br>
 
 - <figure>
   <figcaption>
   Report a post to the moderator
   </figcaption>
   <img src="./highlights/G-report.png" alt="report post">
-  </figure><br>
+  </figure><br><br>
 
 ___
 For more details, refer to the [assignment document](assignment.pdf).
