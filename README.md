@@ -25,80 +25,70 @@ Bonus implemented:
 
 ## Some highlights:
 
-Login/Register
+<!-- Login/Register
 ![Login/Register](./highlights/G-login.png)
-<br/><br/>
+<br/><br/> -->
 
-<figure>
-  <figcaption>
-  Login/Register
-  </figcaption>
-  <img src="./highlights/G-login.png" alt="Reigister">
-</figure>
-<br>
-<br>
-<figure>
+- <figure>
+    <figcaption>
+    Login/Register
+    </figcaption>
+    <img src="./highlights/G-login.png" alt="Reigister">
+  </figure><br>
+- <figure>
   <figcaption>
     Create a SG (subgreddiit)
     </figcaption>
   <img src="./highlights/G-create_sg.png" alt="Create SG">
-</figure>
-<br>
-
-<figure>
-  <img src="./highlights/G-search_sg.png" alt="Search">
+  </figure><br>
+- <figure>
   <figcaption>
   Search an SG from the list of all SGs
   </figcaption>
-</figure>
-<br>
+  <img src="./highlights/G-search_sg.png" alt="Search">
+  </figure><br>
 
-<figure>
-  <img src="./highlights/G-requests.png" alt="requests">
+- <figure>
   <figcaption>
-  Accept/Reject the joinning requests
-  </figcaption>
-</figure>
-<br>
+    Accept/Reject the joinning requests
+    </figcaption>
+    <img src="./highlights/G-requests.png" alt="requests">
+  </figure>
+  <br>
 
-<figure>
-  <img src="./highlights/G-mod.png" alt="stats">
+- <figure>
   <figcaption>
   View statistics of your SG
   </figcaption>
-</figure>
-<br>
+  <img src="./highlights/G-mod.png" alt="stats">
+  </figure><br>
 
-<figure>
-  <img src="./highlights/G-reports.png" alt="view reports">
+- <figure>
   <figcaption>
   Manage reports of your SG: Block user, Delete the post, or Ignore the Report
   </figcaption>
-</figure>
-<br>
-<figure>
-  <img src="./highlights/G-report_block_timer.png" alt="block timer">
-  <figcaption>
+  <img src="./highlights/G-reports.png" alt="view reports">
+  </figure><br>
+- <figure>
+    <figcaption>
   Timer for clocking the user
   </figcaption>
-</figure>
-<br>
+  <img src="./highlights/G-report_block_timer.png" alt="block timer">
+  </figure><br>
 
-<figure>
-  <img src="./highlights/G-createPost.png" alt="create post">
+- <figure>
   <figcaption>
   Create a post in an SG. after joinning it.
   </figcaption>
-</figure>
-<br>
+  <img src="./highlights/G-createPost.png" alt="create post">
+  </figure><br>
 
-<figure>
-  <img src="./highlights/G-report.png" alt="report post">
+- <figure>
   <figcaption>
   Report a post to the moderator
   </figcaption>
-</figure>
-<br>
+  <img src="./highlights/G-report.png" alt="report post">
+  </figure><br>
 
 ___
 For more details, refer to the [assignment document](assignment.pdf).
